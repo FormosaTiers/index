@@ -1,0 +1,28 @@
+{
+    "Sword": {
+        "Tier 1": ["521z_", "FkYO"],
+        "Tier 2": ["Verniq", "Deroyalez", "Enlock", "Gcldjunge"],
+        "Tier 3": ["wxxe", "Bwnks", "YukonCornn", "Vuirn"],
+        "Tier 4": ["Vasm_", "YeaNahMan", "WolfBeag"],
+        "Tier 5": ["RealKirk", "JohnEarlyEnter", "kxler_", "Mintyss"]
+    },
+    "Pot": {
+        "Tier 1": ["PotGod_01", "SplashKing"],
+        "Tier 2": ["Healer_X", "DebuffMaster"],
+        "Tier 3": ["RefillFast"],
+        "Tier 4": ["NewbiePot"],
+        "Tier 5": ["JustStarted"]
+    },
+    "UHC": {
+        "Tier 1": ["XNestorio", "Huahwi"],
+        "Tier 2": ["Wisp", "Speedsilver"],
+        "Tier 3": ["PlayerA"]
+    },
+    "Vanilla": {},
+    "Overall": {},
+    "LTMs": {},
+    "NethOP": {},
+    "SMP": {},
+    "Axe": {},
+    "Mace": {}
+}
