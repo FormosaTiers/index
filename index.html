@@ -252,7 +252,6 @@
 
     <script>
         // --- 設定區 ---
-        // Google Sheet ID
         const spreadsheetId = '1pRSRy8WOP5EJ7dng58QWZhuH90l4B0nFWqWI6rGoAyo'; 
         const sheetName = 'Sheet1'; 
         // --------------
@@ -267,26 +266,28 @@
             { name: "Tier 5", headerClass: "t5-header", cardClass: "t5-card" }
         ];
 
-        // 定義 Level 的權重與顯示顏色，方便排序與渲染
         const levelMap = {
-            'H': { score: 3, label: 'H', color: '#ff4d4d' }, // High: 紅色系
-            'M': { score: 2, label: 'M', color: '#ffd700' }, // Mid: 金黃色
-            'L': { score: 1, label: 'L', color: '#4caf50' }  // Low: 綠色系
+            'H': { score: 3, label: 'H', color: '#ff4d4d' },
+            'M': { score: 2, label: 'M', color: '#ffd700' },
+            'L': { score: 1, label: 'L', color: '#4caf50' }
         };
 
         window.onload = function() {
-            // 讀取 Google Sheet
             fetch(`https://opensheet.elk.sh/${spreadsheetId}/${sheetName}`)
                 .then(res => res.json())
                 .then(rawData => {
-                    processData(rawData); // 處理資料 (分類 + 排序)
+                    processData(rawData);
                     
-                    // 預設開啟 Sword，如果沒資料則開啟第一個有的分類
-                    const initialTab = "Sword";
-                    if (database[initialTab]) {
-                        const swordBtn = document.querySelector(`.nav-item[onclick*='Sword']`);
-                        if(swordBtn) switchTab(swordBtn, initialTab);
-                    } else {
+                    // 預設開啟 Sword (這裡用原始 HTML 裡的大小寫沒關係，因為 renderBoard 會自己轉小寫)
+                    const initialTab = "Sword"; 
+                    
+                    // 1. 嘗試觸發 UI 按鈕變色
+                    const swordBtn = document.querySelector(`.nav-item[onclick*='${initialTab}']`);
+                    if(swordBtn) switchTab(swordBtn, initialTab);
+                    
+                    // 2. 如果 Sword 沒資料，就畫第一個有的資料 (防呆)
+                    // Object.keys(database)[0] 會是全小寫的 key (例如 'sword')
+                    if (!database[initialTab.toLowerCase()]) {
                         const firstKey = Object.keys(database)[0];
                         if(firstKey) renderBoard(firstKey);
                     }
@@ -297,50 +298,48 @@
                 });
         };
 
-        // 資料處理核心函式 (Data Transformer)
+        // ★★★ 資料處理核心：極簡化 (Simply Lowercase) ★★★
         function processData(rows) {
-            database = {}; // 清空
+            database = {}; 
 
             rows.forEach(row => {
-                // 1. 處理分類名稱: excel "sword" -> key "Sword" (首字大寫)
                 if(!row.category) return;
-                const catRaw = row.category.trim();
-                const category = catRaw.charAt(0).toUpperCase() + catRaw.slice(1).toLowerCase();
+                
+                // 1. 不管 Excel 填什麼，通通轉成小寫 (e.g., "Sword" -> "sword", "UHC" -> "uhc")
+                const category = row.category.trim().toLowerCase(); 
 
-                // 2. 處理 Tier: excel 1 -> "Tier 1"
                 const tierName = `Tier ${row.tier}`;
-
-                // 3. 準備玩家物件
                 const playerObj = {
                     name: row.player,
-                    level: row.level ? row.level.toUpperCase() : 'M' // 沒填預設 M
+                    level: row.level ? row.level.toUpperCase() : 'M'
                 };
 
-                // 4. 建構巢狀結構
                 if (!database[category]) database[category] = {};
                 if (!database[category][tierName]) database[category][tierName] = [];
 
                 database[category][tierName].push(playerObj);
             });
 
-            // 5. 排序邏輯 (Sorting Logic): 在每個 Tier 內，根據 H > M > L 排序
+            // 排序邏輯維持不變
             for (const cat in database) {
                 for (const tier in database[cat]) {
                     database[cat][tier].sort((a, b) => {
                         const scoreA = levelMap[a.level]?.score || 0;
                         const scoreB = levelMap[b.level]?.score || 0;
-                        return scoreB - scoreA; // 大的排前面 (Desc)
+                        return scoreB - scoreA;
                     });
                 }
             }
         }
 
         function switchTab(element, modeName) {
-            if(!element) return; // 防呆
+            if(!element) return;
             document.querySelectorAll('.nav-item').forEach(item => {
                 item.classList.remove('active');
             });
             element.classList.add('active');
+            
+            // 傳入原本的名稱 (如 "Sword") 給渲染函式
             renderBoard(modeName);
         }
 
@@ -348,7 +347,11 @@
             const board = document.getElementById('tierBoard');
             board.innerHTML = ''; 
 
-            const currentData = database[mode];
+            // ★★★ 關鍵：讀取時也轉小寫 ★★★
+            // HTML 傳來 "Sword" -> 轉成 "sword" -> 去資料庫找
+            // HTML 傳來 "UHC"   -> 轉成 "uhc"   -> 去資料庫找
+            const dataKey = mode.toLowerCase();
+            const currentData = database[dataKey];
 
             if (!currentData || Object.keys(currentData).length === 0) {
                 board.innerHTML = '<div class="no-data">此模式暫無數據 / No Data</div>';
@@ -356,9 +359,7 @@
             }
 
             tierConfigs.forEach(config => {
-                // 注意：現在 players 陣列裡裝的是物件 {name, level}，不是純字串了
                 const players = currentData[config.name] || [];
-
                 const col = document.createElement('div');
                 col.className = 'tier-column';
 
@@ -371,11 +372,9 @@
 
                 players.forEach(p => {
                     const lvlInfo = levelMap[p.level] || levelMap['M'];
-                    
                     const card = document.createElement('div');
                     card.className = `player-card ${config.cardClass}`;
                     
-                    // 這裡加入了 Level 的小標籤樣式
                     card.innerHTML = `
                         <div style="display:flex; align-items:center; gap:8px;">
                             <span style="
