@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formosa Tiers - Fixed</title>
+    <style>
+        :root {
+            --bg-main: #0f1115;
+            --bg-panel: #16181e;
+            --bg-card: #20222b;
+            --text-white: #eeeeee;
+            --text-grey: #8b8e96;
+            
+            /* Tier Colors */
+            --tier1-color: #d4af37;   /* 金色 */
+            --tier2-color: #a0a0a0;   /* 銀色 */
+            --tier3-color: #cd7f32;   /* 銅色 */
+            --tier4-color: #5b7da8;   /* 藍色 */
+            --tier5-color: #6e757c;   /* 深灰 */
+        }
+
+        body {
+            background-color: var(--bg-main);
+            color: var(--text-white);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+        }
+
+        /* --- 頂部 Logo 區域 --- */
+        .site-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            padding: 10px 0;
+            border-bottom: 2px solid #2a2d35;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo-text {
+            font-family: 'Impact', 'Arial Black', sans-serif;
+            font-size: 3rem;
+            font-weight: 900;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            font-style: italic;
+            background: linear-gradient(180deg, #fffacd 0%, #ffd700 40%, #ff8c00 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: drop-shadow(4px 4px 0px rgba(0,0,0,0.6));
+            cursor: pointer;
+            /* 為了保險起見，這邊也加一點點 padding */
+            padding-right: 5px; 
+        }
+
+        .logo-sub {
+            color: #fff;
+            font-size: 3rem;
+            font-family: 'Impact', 'Arial Black', sans-serif;
+            font-weight: 900;
+            text-transform: uppercase;
+            font-style: italic;
+            margin-left: 10px;
+            
+            /* --- 修正關鍵在此 --- */
+            /* 加上右側內距，防止斜體的 S 被切掉 */
+            padding-right: 15px; 
+            
+            background: linear-gradient(180deg, #ffffff 0%, #dcdcdc 50%, #808080 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: drop-shadow(4px 4px 0px rgba(0,0,0,0.6));
+        }
+
+        /* 裝飾性搜尋框 */
+        .top-search {
+            background-color: #000;
+            border: 1px solid #333;
+            border-radius: 20px;
+            padding: 8px 15px;
+            color: #777;
+            font-size: 0.9rem;
+            width: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        /* --- 導航列 (Navbar) --- */
+        .navbar {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            padding-bottom: 0px;
+            overflow-x: auto;
+            white-space: nowrap;
+        }
+
+        .nav-item {
+            padding: 10px 20px;
+            color: var(--text-grey);
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 0.95rem;
+            position: relative;
+            transition: color 0.2s;
+            user-select: none;
+            background-color: #1a1c24;
+            border-radius: 8px;
+            margin-right: 5px;
+        }
+        
+        .nav-item:hover {
+            color: #ccc;
+            background-color: #252830;
+        }
+
+        .nav-item.active {
+            color: white;
+            background-color: #3b82f6;
+            box-shadow: 0 0 10px rgba(59, 130, 246, 0.4);
+        }
+
+        /* --- Tier 佈局 --- */
+        .tier-board {
+            display: flex;
+            flex-direction: row;
+            gap: 12px;
+            overflow-x: auto;
+            padding-bottom: 20px;
+            align-items: flex-start;
+        }
+
+        .tier-column {
+            flex: 1;
+            min-width: 200px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .tier-header {
+            padding: 12px;
+            text-align: center;
+            font-weight: 800;
+            font-size: 1.2rem;
+            border-top-left-radius: 6px;
+            border-top-right-radius: 6px;
+            background-color: #1e2028;
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 5px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+        }
+
+        /* 顏色定義 */
+        .t1-header { color: var(--tier1-color); border-top: 3px solid var(--tier1-color); background: linear-gradient(to bottom, #2d2a1e, #1e2028); }
+        .t2-header { color: var(--tier2-color); border-top: 3px solid var(--tier2-color); }
+        .t3-header { color: var(--tier3-color); border-top: 3px solid var(--tier3-color); }
+        .t4-header { color: var(--tier4-color); border-top: 3px solid var(--tier4-color); }
+        .t5-header { color: var(--tier5-color); border-top: 3px solid var(--tier5-color); }
+
+        .player-list {
+            background-color: var(--bg-panel);
+            border-bottom-left-radius: 6px;
+            border-bottom-right-radius: 6px;
+            padding: 5px;
+            min-height: 200px;
+        }
+
+        .player-card {
+            background-color: var(--bg-card);
+            margin-bottom: 4px;
+            padding: 10px 12px;
+            font-size: 0.95rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-radius: 3px;
+            cursor: pointer;
+            transition: background 0.2s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .player-card:hover { background-color: #2a2d38; }
+
+        .player-card::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 3px;
+        }
+        
+        .t1-card::before { background-color: var(--tier1-color); }
+        .t2-card::before { background-color: var(--tier2-color); }
+        .t3-card::before { background-color: var(--tier3-color); }
+        .t4-card::before { background-color: var(--tier4-color); }
+        .t5-card::before { background-color: var(--tier5-color); }
+
+        .arrow-icon { color: #444; font-size: 12px; }
+        
+        .no-data {
+            width: 100%;
+            text-align: center;
+            color: #555;
+            margin-top: 50px;
+            font-size: 1.5rem;
+        }
+    </style>
+</head>
+<body>
+
+    <header class="site-header">
+        <div class="logo-container">
+            <span class="logo-text">Formosa</span>
+            <span class="logo-sub">TIERS</span>
+        </div>
+        
+        <div class="top-search">
+            <span>Search player...</span>
+            <span>🔍</span>
+        </div>
+    </header>
+
+    <div class="navbar">
+        <div class="nav-item" onclick="switchTab(this, 'Overall')">🏆 Overall</div>
+        <div class="nav-item" onclick="switchTab(this, 'LTMs')">⚔️ LTMs</div>
+        <div class="nav-item" onclick="switchTab(this, 'Vanilla')">💎 Vanilla</div>
+        <div class="nav-item" onclick="switchTab(this, 'UHC')">❤️ UHC</div>
+        <div class="nav-item" onclick="switchTab(this, 'Pot')">🧪 Pot</div>
+        <div class="nav-item" onclick="switchTab(this, 'NethOP')">👾 NethOP</div>
+        <div class="nav-item" onclick="switchTab(this, 'SMP')">🌍 SMP</div>
+        <div class="nav-item active" onclick="switchTab(this, 'Sword')">🗡️ Sword</div>
+        <div class="nav-item" onclick="switchTab(this, 'Axe')">🪓 Axe</div>
+        <div class="nav-item" onclick="switchTab(this, 'Mace')">🔨 Mace</div>
+    </div>
+
+    <div class="tier-board" id="tierBoard">
+        </div>
+
+    <script>
+        // 資料庫
+        const database = {
+            "Sword": {
+                "Tier 1": ["Kylaz", "Marlowww"],
+                "Tier 2": ["Verniq", "Deroyalez", "Enlock", "Gcldjunge"],
+                "Tier 3": ["wxxe", "Bwnks", "YukonCornn", "Vuirn"],
+                "Tier 4": ["Vasm_", "YeaNahMan", "WolfBeag"],
+                "Tier 5": ["RealKirk", "JohnEarlyEnter", "kxler_", "Mintyss"]
+            },
+            "Pot": {
+                "Tier 1": ["PotGod_01", "SplashKing"],
+                "Tier 2": ["Healer_X", "DebuffMaster"],
+                "Tier 3": ["RefillFast"],
+                "Tier 4": ["NewbiePot"],
+                "Tier 5": ["JustStarted"]
+            },
+            "UHC": {
+                "Tier 1": ["XNestorio", "Huahwi"],
+                "Tier 2": ["Wisp", "Speedsilver"],
+                "Tier 3": ["PlayerA"]
+            },
+            "Vanilla": {},
+            "Overall": {},
+            "LTMs": {},
+            "NethOP": {},
+            "SMP": {},
+            "Axe": {},
+            "Mace": {}
+        };
+
+        const tierConfigs = [
+            { name: "Tier 1", headerClass: "t1-header", cardClass: "t1-card" },
+            { name: "Tier 2", headerClass: "t2-header", cardClass: "t2-card" },
+            { name: "Tier 3", headerClass: "t3-header", cardClass: "t3-card" },
+            { name: "Tier 4", headerClass: "t4-header", cardClass: "t4-card" },
+            { name: "Tier 5", headerClass: "t5-header", cardClass: "t5-card" }
+        ];
+
+        window.onload = function() {
+            renderBoard("Sword");
+        };
+
+        function switchTab(element, modeName) {
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            element.classList.add('active');
+            renderBoard(modeName);
+        }
+
+        function renderBoard(mode) {
+            const board = document.getElementById('tierBoard');
+            board.innerHTML = ''; 
+
+            const currentData = database[mode];
+
+            if (!currentData || Object.keys(currentData).length === 0) {
+                board.innerHTML = '<div class="no-data">此模式暫無數據 / No Data</div>';
+                return;
+            }
+
+            tierConfigs.forEach(config => {
+                const players = currentData[config.name] || [];
+
+                const col = document.createElement('div');
+                col.className = 'tier-column';
+
+                const header = document.createElement('div');
+                header.className = `tier-header ${config.headerClass}`;
+                header.innerHTML = `🏆 ${config.name}`;
+
+                const list = document.createElement('div');
+                list.className = 'player-list';
+
+                players.forEach(player => {
+                    const card = document.createElement('div');
+                    card.className = `player-card ${config.cardClass}`;
+                    card.innerHTML = `
+                        <span>${player}</span>
+                        <span class="arrow-icon">»</span>
+                    `;
+                    list.appendChild(card);
+                });
+
+                col.appendChild(header);
+                col.appendChild(list);
+                board.appendChild(col);
+            });
+        }
+    </script>
+</body>
+</html>
