@@ -251,35 +251,8 @@
         </div>
 
     <script>
-        // 資料庫
-        const database = {
-            "Sword": {
-                "Tier 1": ["521z_", "FkYO"],
-                "Tier 2": ["Verniq", "Deroyalez", "Enlock", "Gcldjunge"],
-                "Tier 3": ["wxxe", "Bwnks", "YukonCornn", "Vuirn"],
-                "Tier 4": ["Vasm_", "YeaNahMan", "WolfBeag"],
-                "Tier 5": ["RealKirk", "JohnEarlyEnter", "kxler_", "Mintyss"]
-            },
-            "Pot": {
-                "Tier 1": ["PotGod_01", "SplashKing"],
-                "Tier 2": ["Healer_X", "DebuffMaster"],
-                "Tier 3": ["RefillFast"],
-                "Tier 4": ["NewbiePot"],
-                "Tier 5": ["JustStarted"]
-            },
-            "UHC": {
-                "Tier 1": ["XNestorio", "Huahwi"],
-                "Tier 2": ["Wisp", "Speedsilver"],
-                "Tier 3": ["PlayerA"]
-            },
-            "Vanilla": {},
-            "Overall": {},
-            "LTMs": {},
-            "NethOP": {},
-            "SMP": {},
-            "Axe": {},
-            "Mace": {}
-        };
+        // 資料庫容器 - 動態載入
+        let database = {};
 
         const tierConfigs = [
             { name: "Tier 1", headerClass: "t1-header", cardClass: "t1-card" },
@@ -290,7 +263,16 @@
         ];
 
         window.onload = function() {
-            renderBoard("Sword");
+            fetch('./data.json')
+                .then(res => res.json())
+                .then(data => {
+                    database = data;
+                    renderBoard("Sword");
+                })
+                .catch(err => {
+                    console.error("讀取資料失敗:", err);
+                    document.getElementById('tierBoard').innerHTML = '<div class="no-data">載入數據失敗 (Load Failed)</div>';
+                });
         };
 
         function switchTab(element, modeName) {
