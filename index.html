@@ -248,7 +248,6 @@
     </header>
 
     <div class="navbar">
-        
         <div class="nav-item active" onclick="switchTab(this, 'Sword')">🗡️ 鑽石王牌</div>
         <div class="nav-item" onclick="switchTab(this, 'UHC')">❤️ UHC</div>
         <div class="nav-item" onclick="switchTab(this, 'Pot')">🧪 鑽石POT</div>
@@ -271,12 +270,17 @@
 
         let database = {};
 
+        // ★★★ 修改處：在這裡定義每個 Tier 的 Emoji (icon) ★★★
+        // Tier 1: 🥇 (金牌)
+        // Tier 2: 🥈 (銀牌)
+        // Tier 3: 🥉 (銅牌)
+        // Tier 4, 5: "" (空字串，不顯示)
         const tierConfigs = [
-            { name: "Tier 1", headerClass: "t1-header", cardClass: "t1-card" },
-            { name: "Tier 2", headerClass: "t2-header", cardClass: "t2-card" },
-            { name: "Tier 3", headerClass: "t3-header", cardClass: "t3-card" },
-            { name: "Tier 4", headerClass: "t4-header", cardClass: "t4-card" },
-            { name: "Tier 5", headerClass: "t5-header", cardClass: "t5-card" }
+            { name: "Tier 1", headerClass: "t1-header", cardClass: "t1-card", icon: "🥇" },
+            { name: "Tier 2", headerClass: "t2-header", cardClass: "t2-card", icon: "🥈" },
+            { name: "Tier 3", headerClass: "t3-header", cardClass: "t3-card", icon: "🥉" },
+            { name: "Tier 4", headerClass: "t4-header", cardClass: "t4-card", icon: "" },
+            { name: "Tier 5", headerClass: "t5-header", cardClass: "t5-card", icon: "" }
         ];
 
         const levelMap = {
@@ -291,7 +295,7 @@
                 .then(rawData => {
                     processData(rawData);
                     
-                    // 預設開啟 Sword (這裡用原始 HTML 裡的大小寫沒關係，因為 renderBoard 會自己轉小寫)
+                    // 預設開啟 Sword
                     const initialTab = "Sword"; 
                     
                     // 1. 嘗試觸發 UI 按鈕變色
@@ -299,7 +303,6 @@
                     if(swordBtn) switchTab(swordBtn, initialTab);
                     
                     // 2. 如果 Sword 沒資料，就畫第一個有的資料 (防呆)
-                    // Object.keys(database)[0] 會是全小寫的 key (例如 'sword')
                     if (!database[initialTab.toLowerCase()]) {
                         const firstKey = Object.keys(database)[0];
                         if(firstKey) renderBoard(firstKey);
@@ -352,7 +355,7 @@
             });
             element.classList.add('active');
             
-            // 切換分頁時，清空搜尋框 (新增功能)
+            // 切換分頁時，清空搜尋框
             const searchInput = document.getElementById('searchInput');
             if(searchInput) searchInput.value = '';
 
@@ -364,9 +367,6 @@
             const board = document.getElementById('tierBoard');
             board.innerHTML = ''; 
 
-            // ★★★ 關鍵：讀取時也轉小寫 ★★★
-            // HTML 傳來 "Sword" -> 轉成 "sword" -> 去資料庫找
-            // HTML 傳來 "UHC"   -> 轉成 "uhc"   -> 去資料庫找
             const dataKey = mode.toLowerCase();
             const currentData = database[dataKey];
 
@@ -382,7 +382,10 @@
 
                 const header = document.createElement('div');
                 header.className = `tier-header ${config.headerClass}`;
-                header.innerHTML = `🏆 ${config.name}`;
+                
+                // ★★★ 修改處：讀取上面定義的 icon，如果有 icon 就加空格，沒有就直接顯示名字 ★★★
+                const iconHtml = config.icon ? `${config.icon} ` : '';
+                header.innerHTML = `${iconHtml}${config.name}`;
 
                 const list = document.createElement('div');
                 list.className = 'player-list';
@@ -435,7 +438,3 @@
 </body>
 
 </html>
-
-
-
-
