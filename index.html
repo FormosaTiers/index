@@ -79,7 +79,7 @@
             filter: drop-shadow(4px 4px 0px rgba(0,0,0,0.6));
         }
 
-        /* 裝飾性搜尋框 */
+        /* 裝飾性搜尋框 (已修改為支援輸入) */
         .top-search {
             background-color: #000;
             border: 1px solid #333;
@@ -87,10 +87,23 @@
             padding: 8px 15px;
             color: #777;
             font-size: 0.9rem;
-            width: 200px;
+            width: 250px; /* 稍微加寬以容納輸入 */
             display: flex;
             align-items: center;
             justify-content: space-between;
+        }
+
+        /* --- 新增：搜尋框輸入樣式 --- */
+        .top-search input {
+            background: transparent;
+            border: none;
+            color: #eeeeee;
+            font-size: 0.9rem;
+            width: 100%;
+            outline: none;
+        }
+        .top-search input::placeholder {
+            color: #555;
         }
 
         /* --- 導航列 (Navbar) --- */
@@ -229,7 +242,7 @@
         </div>
         
         <div class="top-search">
-            <span>Search player...</span>
+            <input type="text" id="searchInput" placeholder="Search player..." onkeyup="filterPlayers()">
             <span>🔍</span>
         </div>
     </header>
@@ -247,7 +260,7 @@
     </div>
 
     <div class="tier-board" id="tierBoard">
-        </div>
+    </div>
 
     <script>
         // --- 設定區 ---
@@ -338,6 +351,10 @@
             });
             element.classList.add('active');
             
+            // 切換分頁時，清空搜尋框 (新增功能)
+            const searchInput = document.getElementById('searchInput');
+            if(searchInput) searchInput.value = '';
+
             // 傳入原本的名稱 (如 "Sword") 給渲染函式
             renderBoard(modeName);
         }
@@ -398,9 +415,22 @@
                 board.appendChild(col);
             });
         }
+
+        // ★★★ 新增：搜尋過濾功能 ★★★
+        function filterPlayers() {
+            const input = document.getElementById('searchInput').value.toLowerCase();
+            const cards = document.querySelectorAll('.player-card');
+
+            cards.forEach(card => {
+                const text = card.innerText.toLowerCase();
+                if (text.includes(input)) {
+                    card.style.display = "flex";
+                } else {
+                    card.style.display = "none";
+                }
+            });
+        }
     </script>
 </body>
 
 </html>
-
-
