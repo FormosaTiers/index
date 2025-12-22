@@ -30,7 +30,6 @@
             margin: 0;
             padding: 20px;
             
-            /* 讓整個網頁內容置中 */
             display: flex;
             flex-direction: column;
             align-items: center; 
@@ -60,16 +59,14 @@
             object-fit: contain;
         }
 
-        /* ★★★ 新增：右側控制區 (包含 Discord 按鈕 + 搜尋框) ★★★ */
         .header-controls {
             display: flex;
             align-items: center;
-            gap: 15px; /* 按鈕跟搜尋框的距離 */
+            gap: 15px;
         }
 
-        /* ★★★ 新增：Discord 按鈕樣式 ★★★ */
         .discord-btn {
-            background-color: #5865F2; /* Discord 官方藍 */
+            background-color: #5865F2;
             color: white;
             text-decoration: none;
             padding: 8px 15px;
@@ -84,7 +81,7 @@
         }
         
         .discord-btn:hover {
-            background-color: #4752C4; /* 滑鼠移過去變深色 */
+            background-color: #4752C4;
         }
 
         .discord-btn svg {
@@ -93,7 +90,6 @@
             fill: white;
         }
 
-        /* 搜尋框 */
         .top-search {
             background-color: #000;
             border: 1px solid #333;
@@ -170,6 +166,7 @@
             width: 100%;
             max-width: 1260px;
             justify-content: center;
+            min-height: 400px; /* 防止加載時塌陷 */
         }
 
         .tier-column {
@@ -245,13 +242,27 @@
 
         .arrow-icon { color: #444; font-size: 12px; }
         
-        .no-data {
+        .no-data, .loading-data {
             width: 100%;
             text-align: center;
             color: #555;
             margin-top: 50px;
             font-size: 1.5rem;
         }
+        
+        /* 簡單的加載動畫 */
+        .loading-spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 2px solid #555;
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 1s ease-in-out infinite;
+            margin-right: 10px;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
     </style>
 </head>
 <body>
@@ -288,15 +299,16 @@
     </div>
 
     <div class="tier-board" id="tierBoard">
-    </div>
+        </div>
 
     <script>
         // --- 設定區 ---
         const spreadsheetId = '1pRSRy8WOP5EJ7dng58QWZhuH90l4B0nFWqWI6rGoAyo'; 
-        const sheetName = 'Sheet1'; 
+        // 不需要 sheetName 了，因為會根據按鈕動態抓取
         // --------------
 
-        let database = {};
+        let database = {}; // 格式: { "Sword": { "Tier 1": [], ... }, "UHC": ... }
+        let currentMode = '';
 
         // Tier Emoji 設定
         const tierConfigs = [
@@ -314,34 +326,67 @@
         };
 
         window.onload = function() {
+            // 預設載入第一個分頁 'Sword'
+            const defaultMode = 'Sword';
+            const defaultBtn = document.querySelector(`.nav-item[onclick*="'${defaultMode}'"]`);
+            if (defaultBtn) {
+                switchTab(defaultBtn, defaultMode);
+            }
+        };
+
+        function switchTab(element, sheetName) {
+            // 1. UI 更新
+            if(element) {
+                document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+                element.classList.add('active');
+            }
+            
+            // 清空搜尋
+            const searchInput = document.getElementById('searchInput');
+            if(searchInput) searchInput.value = '';
+
+            currentMode = sheetName;
+
+            // 2. 檢查是否已經有資料 (Cache)
+            if (database[sheetName]) {
+                renderBoard(sheetName);
+            } else {
+                // 3. 沒有資料則去抓取該分頁
+                fetchData(sheetName);
+            }
+        }
+
+        function fetchData(sheetName) {
+            const board = document.getElementById('tierBoard');
+            board.innerHTML = `<div class="loading-data"><span class="loading-spinner"></span>正在載入 ${sheetName} 數據...</div>`;
+
+            // 使用 sheetName 作為 URL 的一部分
             fetch(`https://opensheet.elk.sh/${spreadsheetId}/${sheetName}`)
-                .then(res => res.json())
-                .then(rawData => {
-                    processData(rawData);
-                    
-                    const initialTab = "Sword"; 
-                    
-                    const swordBtn = document.querySelector(`.nav-item[onclick*='${initialTab}']`);
-                    if(swordBtn) switchTab(swordBtn, initialTab);
-                    
-                    if (!database[initialTab.toLowerCase()]) {
-                        const firstKey = Object.keys(database)[0];
-                        if(firstKey) renderBoard(firstKey);
+                .then(res => {
+                    if (!res.ok) throw new Error('Network response was not ok');
+                    return res.json();
+                })
+                .then(rows => {
+                    // 如果 rows 是空的或者有錯誤屬性
+                    if (!Array.isArray(rows)) {
+                        throw new Error('Data format error or sheet not found');
                     }
+                    processData(rows, sheetName);
+                    renderBoard(sheetName);
                 })
                 .catch(err => {
                     console.error("讀取失敗:", err);
-                    document.getElementById('tierBoard').innerHTML = '<div class="no-data">載入數據失敗 (Load Failed)</div>';
+                    board.innerHTML = `<div class="no-data">無法讀取分頁 "${sheetName}"。<br><small>請確認 Google Sheet 中是否有此分頁名稱。</small></div>`;
                 });
-        };
+        }
 
-        function processData(rows) {
-            database = {}; 
+        function processData(rows, sheetName) {
+            // 初始化該模式的資料結構
+            if (!database[sheetName]) database[sheetName] = {};
 
             rows.forEach(row => {
-                if(!row.category) return;
-                
-                const category = row.category.trim().toLowerCase(); 
+                // 不再檢查 row.category，直接將資料歸類到目前的 sheetName
+                if (!row.tier || !row.player) return; // 基本防呆
 
                 const tierName = `Tier ${row.tier}`;
                 const playerObj = {
@@ -349,42 +394,28 @@
                     level: row.level ? row.level.toUpperCase() : 'M'
                 };
 
-                if (!database[category]) database[category] = {};
-                if (!database[category][tierName]) database[category][tierName] = [];
-
-                database[category][tierName].push(playerObj);
-            });
-
-            for (const cat in database) {
-                for (const tier in database[cat]) {
-                    database[cat][tier].sort((a, b) => {
-                        const scoreA = levelMap[a.level]?.score || 0;
-                        const scoreB = levelMap[b.level]?.score || 0;
-                        return scoreB - scoreA;
-                    });
+                if (!database[sheetName][tierName]) {
+                    database[sheetName][tierName] = [];
                 }
-            }
-        }
 
-        function switchTab(element, modeName) {
-            if(!element) return;
-            document.querySelectorAll('.nav-item').forEach(item => {
-                item.classList.remove('active');
+                database[sheetName][tierName].push(playerObj);
             });
-            element.classList.add('active');
-            
-            const searchInput = document.getElementById('searchInput');
-            if(searchInput) searchInput.value = '';
 
-            renderBoard(modeName);
+            // 排序 (根據 H/M/L)
+            for (const tier in database[sheetName]) {
+                database[sheetName][tier].sort((a, b) => {
+                    const scoreA = levelMap[a.level]?.score || 0;
+                    const scoreB = levelMap[b.level]?.score || 0;
+                    return scoreB - scoreA;
+                });
+            }
         }
 
         function renderBoard(mode) {
             const board = document.getElementById('tierBoard');
             board.innerHTML = ''; 
 
-            const dataKey = mode.toLowerCase();
-            const currentData = database[dataKey];
+            const currentData = database[mode];
 
             if (!currentData || Object.keys(currentData).length === 0) {
                 board.innerHTML = '<div class="no-data">此模式暫無數據 / No Data</div>';
@@ -433,6 +464,9 @@
                 col.appendChild(list);
                 board.appendChild(col);
             });
+            
+            // 重新應用篩選器 (如果切換 tab 前有輸入文字)
+            filterPlayers();
         }
 
         function filterPlayers() {
