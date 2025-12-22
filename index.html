@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Formosa Tiers - Fixed</title>
+    <title>Formosa Tiers</title>
     
     <link rel="icon" href="icon.png?v=2" type="image/png">
 
@@ -30,10 +30,10 @@
             margin: 0;
             padding: 20px;
             
-            /* ★★★ 修改處：讓整個網頁內容置中 ★★★ */
+            /* 讓整個網頁內容置中 */
             display: flex;
             flex-direction: column;
-            align-items: center; /* 水平置中所有子元素 */
+            align-items: center; 
         }
 
         /* --- 頂部 Header 區域 --- */
@@ -45,7 +45,6 @@
             padding: 10px 0;
             border-bottom: 2px solid #2a2d35;
             
-            /* ★★★ 修改處：限制最大寬度並佔滿空間 ★★★ */
             width: 100%;
             max-width: 1260px; 
         }
@@ -59,6 +58,39 @@
             height: 60px;
             width: auto;
             object-fit: contain;
+        }
+
+        /* ★★★ 新增：右側控制區 (包含 Discord 按鈕 + 搜尋框) ★★★ */
+        .header-controls {
+            display: flex;
+            align-items: center;
+            gap: 15px; /* 按鈕跟搜尋框的距離 */
+        }
+
+        /* ★★★ 新增：Discord 按鈕樣式 ★★★ */
+        .discord-btn {
+            background-color: #5865F2; /* Discord 官方藍 */
+            color: white;
+            text-decoration: none;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: background-color 0.2s;
+            font-size: 0.9rem;
+            border: 1px solid transparent;
+        }
+        
+        .discord-btn:hover {
+            background-color: #4752C4; /* 滑鼠移過去變深色 */
+        }
+
+        .discord-btn svg {
+            width: 20px;
+            height: 20px;
+            fill: white;
         }
 
         /* 搜尋框 */
@@ -96,10 +128,9 @@
             overflow-x: auto;
             white-space: nowrap;
             
-            /* ★★★ 修改處：限制寬度 & 內容置中 ★★★ */
             width: 100%;
             max-width: 1260px;
-            justify-content: center; /* 讓按鈕在中間 */
+            justify-content: center;
         }
 
         .nav-item {
@@ -136,14 +167,13 @@
             padding-bottom: 20px;
             align-items: flex-start;
             
-            /* ★★★ 修改處：限制寬度 & 欄位置中 ★★★ */
             width: 100%;
             max-width: 1260px;
-            justify-content: center; /* 讓 Tier 欄位顯示在正中間 */
+            justify-content: center;
         }
 
         .tier-column {
-            flex: 0 0 240px; /* 固定寬度 */
+            flex: 0 0 240px;
             width: 240px;
             display: flex;
             flex-direction: column;
@@ -231,9 +261,18 @@
             <img src="logo.png" class="site-logo" alt="Formosa Tiers Logo">
         </div>
         
-        <div class="top-search">
-            <input type="text" id="searchInput" placeholder="Search player..." onkeyup="filterPlayers()">
-            <span>🔍</span>
+        <div class="header-controls">
+            <a href="https://discord.gg/yctefdXTvy" target="_blank" class="discord-btn" title="Join our Discord">
+                <svg viewBox="0 0 24 24">
+                    <path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037 13.924 13.924 0 0 0-.623 1.282 18.445 18.445 0 0 0-5.46 0 14.155 14.155 0 0 0-.623-1.282.072.072 0 0 0-.078-.037 19.742 19.742 0 0 0-4.886 1.515.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-2.313-9.117-6.046-13.687a.066.066 0 0 0-.03-.027ZM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.419 0 1.334-.956 2.419-2.157 2.419Zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.419 0 1.334-.946 2.419-2.157 2.419Z"/>
+                </svg>
+                <span>Discord</span>
+            </a>
+
+            <div class="top-search">
+                <input type="text" id="searchInput" placeholder="Search player..." onkeyup="filterPlayers()">
+                <span>🔍</span>
+            </div>
         </div>
     </header>
 
