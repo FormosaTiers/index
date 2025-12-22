@@ -31,7 +31,7 @@
             padding: 20px;
         }
 
-        /* --- 頂部 Logo 區域 --- */
+        /* --- 頂部 Header 區域 --- */
         .site-header {
             display: flex;
             align-items: center;
@@ -41,48 +41,23 @@
             border-bottom: 2px solid #2a2d35;
         }
 
+        /* Logo 容器 */
         .logo-container {
             display: flex;
             align-items: center;
-            gap: 10px;
+            /* 原本的 gap 和複雜文字樣式已移除 */
         }
 
-        .logo-text {
-            font-family: 'Impact', 'Arial Black', sans-serif;
-            font-size: 3rem;
-            font-weight: 900;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            font-style: italic;
-            background: linear-gradient(180deg, #fffacd 0%, #ffd700 40%, #ff8c00 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            filter: drop-shadow(4px 4px 0px rgba(0,0,0,0.6));
-            cursor: pointer;
-            /* 為了保險起見，這邊也加一點點 padding */
-            padding-right: 5px; 
+        /* ★★★ 新增：Logo 圖片樣式 ★★★ */
+        .site-logo {
+            height: 60px; /* 這裡可以調整圖片高度，寬度會自動縮放 */
+            width: auto;
+            object-fit: contain; /* 保持圖片比例 */
         }
+        /* (舊的 .logo-text 和 .logo-sub 樣式已刪除，保持代碼整潔) */
 
-        .logo-sub {
-            color: #fff;
-            font-size: 3rem;
-            font-family: 'Impact', 'Arial Black', sans-serif;
-            font-weight: 900;
-            text-transform: uppercase;
-            font-style: italic;
-            margin-left: 10px;
-            
-            /* --- 修正關鍵在此 --- */
-            /* 加上右側內距，防止斜體的 S 被切掉 */
-            padding-right: 15px; 
-            
-            background: linear-gradient(180deg, #ffffff 0%, #dcdcdc 50%, #808080 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            filter: drop-shadow(4px 4px 0px rgba(0,0,0,0.6));
-        }
 
-        /* 裝飾性搜尋框 (已修改為支援輸入) */
+        /* 裝飾性搜尋框 */
         .top-search {
             background-color: #000;
             border: 1px solid #333;
@@ -90,13 +65,12 @@
             padding: 8px 15px;
             color: #777;
             font-size: 0.9rem;
-            width: 250px; /* 稍微加寬以容納輸入 */
+            width: 250px; 
             display: flex;
             align-items: center;
             justify-content: space-between;
         }
 
-        /* --- 新增：搜尋框輸入樣式 --- */
         .top-search input {
             background: transparent;
             border: none;
@@ -240,8 +214,7 @@
 
     <header class="site-header">
         <div class="logo-container">
-            <span class="logo-text">Formosa</span>
-            <span class="logo-sub">TIERS</span>
+            <img src="logo.png" class="site-logo" alt="Formosa Tiers Logo">
         </div>
         
         <div class="top-search">
@@ -272,11 +245,7 @@
 
         let database = {};
 
-        // ★★★ 修改處：在這裡定義每個 Tier 的 Emoji (icon) ★★★
-        // Tier 1: 🥇 (金牌)
-        // Tier 2: 🥈 (銀牌)
-        // Tier 3: 🥉 (銅牌)
-        // Tier 4, 5: "" (空字串，不顯示)
+        // ★★★ Tier Emoji 設定 ★★★
         const tierConfigs = [
             { name: "Tier 1", headerClass: "t1-header", cardClass: "t1-card", icon: "🥇" },
             { name: "Tier 2", headerClass: "t2-header", cardClass: "t2-card", icon: "🥈" },
@@ -297,14 +266,11 @@
                 .then(rawData => {
                     processData(rawData);
                     
-                    // 預設開啟 Sword
                     const initialTab = "Sword"; 
                     
-                    // 1. 嘗試觸發 UI 按鈕變色
                     const swordBtn = document.querySelector(`.nav-item[onclick*='${initialTab}']`);
                     if(swordBtn) switchTab(swordBtn, initialTab);
                     
-                    // 2. 如果 Sword 沒資料，就畫第一個有的資料 (防呆)
                     if (!database[initialTab.toLowerCase()]) {
                         const firstKey = Object.keys(database)[0];
                         if(firstKey) renderBoard(firstKey);
@@ -316,14 +282,13 @@
                 });
         };
 
-        // ★★★ 資料處理核心：極簡化 (Simply Lowercase) ★★★
+        // ★★★ 資料處理核心 ★★★
         function processData(rows) {
             database = {}; 
 
             rows.forEach(row => {
                 if(!row.category) return;
                 
-                // 1. 不管 Excel 填什麼，通通轉成小寫 (e.g., "Sword" -> "sword", "UHC" -> "uhc")
                 const category = row.category.trim().toLowerCase(); 
 
                 const tierName = `Tier ${row.tier}`;
@@ -338,7 +303,6 @@
                 database[category][tierName].push(playerObj);
             });
 
-            // 排序邏輯維持不變
             for (const cat in database) {
                 for (const tier in database[cat]) {
                     database[cat][tier].sort((a, b) => {
@@ -357,11 +321,9 @@
             });
             element.classList.add('active');
             
-            // 切換分頁時，清空搜尋框
             const searchInput = document.getElementById('searchInput');
             if(searchInput) searchInput.value = '';
 
-            // 傳入原本的名稱 (如 "Sword") 給渲染函式
             renderBoard(modeName);
         }
 
@@ -385,7 +347,6 @@
                 const header = document.createElement('div');
                 header.className = `tier-header ${config.headerClass}`;
                 
-                // ★★★ 修改處：讀取上面定義的 icon，如果有 icon 就加空格，沒有就直接顯示名字 ★★★
                 const iconHtml = config.icon ? `${config.icon} ` : '';
                 header.innerHTML = `${iconHtml}${config.name}`;
 
@@ -422,7 +383,7 @@
             });
         }
 
-        // ★★★ 新增：搜尋過濾功能 ★★★
+        // ★★★ 搜尋功能 ★★★
         function filterPlayers() {
             const input = document.getElementById('searchInput').value.toLowerCase();
             const cards = document.querySelectorAll('.player-card');
@@ -438,6 +399,4 @@
         }
     </script>
 </body>
-
 </html>
-
