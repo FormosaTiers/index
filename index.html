@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Formosa Tiers</title>
+    <title>Formosa Tiers - Fixed</title>
     
     <link rel="icon" href="icon.png?v=2" type="image/png">
 
@@ -41,23 +41,18 @@
             border-bottom: 2px solid #2a2d35;
         }
 
-        /* Logo 容器 */
         .logo-container {
             display: flex;
             align-items: center;
-            /* 原本的 gap 和複雜文字樣式已移除 */
         }
 
-        /* ★★★ 新增：Logo 圖片樣式 ★★★ */
         .site-logo {
-            height: 60px; /* 這裡可以調整圖片高度，寬度會自動縮放 */
+            height: 60px;
             width: auto;
-            object-fit: contain; /* 保持圖片比例 */
+            object-fit: contain;
         }
-        /* (舊的 .logo-text 和 .logo-sub 樣式已刪除，保持代碼整潔) */
 
-
-        /* 裝飾性搜尋框 */
+        /* 搜尋框 */
         .top-search {
             background-color: #000;
             border: 1px solid #333;
@@ -118,19 +113,23 @@
             box-shadow: 0 0 10px rgba(59, 130, 246, 0.4);
         }
 
-        /* --- Tier 佈局 --- */
+        /* --- Tier 佈局 (核心修改處) --- */
         .tier-board {
             display: flex;
             flex-direction: row;
-            gap: 12px;
+            gap: 10px; /* 縮小欄位間距 */
             overflow-x: auto;
             padding-bottom: 20px;
             align-items: flex-start;
         }
 
         .tier-column {
-            flex: 1;
-            min-width: 200px;
+            /* ★★★ 修改重點：固定寬度 ★★★ */
+            /* flex: 1;  <-- 刪除這行，這會導致欄位無限拉伸 */
+            
+            flex: 0 0 240px; /* 固定寬度 240px，不會被壓縮也不會拉伸 */
+            width: 240px;    /* 設定明確寬度 */
+            
             display: flex;
             flex-direction: column;
         }
@@ -139,7 +138,7 @@
             padding: 12px;
             text-align: center;
             font-weight: 800;
-            font-size: 1.2rem;
+            font-size: 1.1rem; /* 標題字稍微縮小一點點 */
             border-top-left-radius: 6px;
             border-top-right-radius: 6px;
             background-color: #1e2028;
@@ -170,8 +169,11 @@
         .player-card {
             background-color: var(--bg-card);
             margin-bottom: 4px;
-            padding: 10px 12px;
-            font-size: 0.95rem;
+            
+            /* ★★★ 修改重點：縮減高度 ★★★ */
+            padding: 6px 10px; /* 上下 padding 減少，讓卡片變瘦 */
+            
+            font-size: 0.9rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -282,7 +284,6 @@
                 });
         };
 
-        // ★★★ 資料處理核心 ★★★
         function processData(rows) {
             database = {}; 
 
@@ -383,7 +384,6 @@
             });
         }
 
-        // ★★★ 搜尋功能 ★★★
         function filterPlayers() {
             const input = document.getElementById('searchInput').value.toLowerCase();
             const cards = document.querySelectorAll('.player-card');
@@ -400,4 +400,3 @@
     </script>
 </body>
 </html>
-
