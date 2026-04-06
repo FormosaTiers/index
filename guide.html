@@ -1,0 +1,892 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PVP 指南 - 福爾摩沙 Tier List</title>
+    <link rel="icon" href="./images/icon.png" type="image/png">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Noto+Sans+TC:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-main: #05070a;
+            --bg-panel: rgba(18, 20, 28, 0.7);
+            --bg-card: #1c1f26;
+            --text-white: #f8f9fa;
+            --text-grey: #94a3b8;
+            --accent-blue: #3b82f6;
+            --accent-gold: #fbbf24;
+            --accent-orange: #fb923c;
+            --accent-purple: #a855f7;
+            --accent-green: #22c55e;
+            --primary-color: #5865F2;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: var(--bg-main);
+            color: var(--text-white);
+            font-family: 'Inter', 'Noto Sans TC', sans-serif;
+            line-height: 1.6;
+            overflow-x: hidden;
+            background-image: 
+                radial-gradient(circle at 20% 20%, rgba(59, 130, 246, 0.05) 0%, transparent 40%),
+                radial-gradient(circle at 80% 80%, rgba(251, 191, 36, 0.05) 0%, transparent 40%);
+            background-attachment: fixed;
+        }
+
+        /* --- 頂部 Header --- */
+        .site-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin: 20px auto 30px;
+            padding: 15px 25px;
+            background: var(--bg-panel);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 24px;
+            width: 100%;
+            max-width: 1260px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        .header-nav {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .nav-link {
+            color: var(--text-grey);
+            text-decoration: none;
+            padding: 10px 18px;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .nav-link:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text-white);
+        }
+
+        .nav-link-active {
+            background: rgba(88, 101, 242, 0.2);
+            color: var(--accent-blue);
+        }
+
+        .nav-link-active:hover {
+            background: rgba(88, 101, 242, 0.3);
+        }
+
+        .nav-link-discord {
+            background: linear-gradient(135deg, #5865F2 0%, #4752C4 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(88, 101, 242, 0.3);
+        }
+
+        .nav-link-discord:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(88, 101, 242, 0.5);
+            background: linear-gradient(135deg, #6777F2 0%, #5a62c9 100%);
+        }
+
+        /* 主內容區 */
+        .main-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* 頁面標題 */
+        .page-header {
+            text-align: center;
+            padding: 3rem 2rem;
+            position: relative;
+        }
+
+        .page-header h1 {
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 900;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #ffffff 0%, var(--accent-blue) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-family: 'Noto Sans TC', sans-serif;
+        }
+
+        .page-header .tagline {
+            font-size: 1.25rem;
+            color: var(--text-grey);
+            max-width: 800px;
+            margin: 0 auto;
+            line-height: 1.8;
+        }
+
+        /* 目錄區 */
+        .toc-container {
+            background: var(--bg-panel);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .toc-container h2 {
+            font-size: 1.5rem;
+            color: var(--accent-gold);
+            margin-bottom: 1.5rem;
+            font-family: 'Noto Sans TC', sans-serif;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .toc-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            list-style: none;
+        }
+
+        .toc-list a {
+            display: block;
+            padding: 1rem 1.5rem;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 12px;
+            color: var(--text-white);
+            text-decoration: none;
+            transition: all 0.3s;
+            font-weight: 600;
+        }
+
+        .toc-list a:hover {
+            background: rgba(59, 130, 246, 0.15);
+            border-color: var(--accent-blue);
+            transform: translateY(-2px);
+        }
+
+        .toc-list .sword { border-left: 4px solid var(--accent-blue); }
+        .toc-list .uhc { border-left: 4px solid var(--accent-green); }
+        .toc-list .netherpot { border-left: 4px solid var(--accent-purple); }
+        .toc-list .mace { border-left: 4px solid var(--accent-orange); }
+
+        /* 指南內容區 */
+        .guide-section {
+            background: var(--bg-panel);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 3rem;
+            scroll-margin-top: 100px;
+        }
+
+        .guide-section.sword { border-top: 4px solid var(--accent-blue); }
+        .guide-section.uhc { border-top: 4px solid var(--accent-green); }
+        .guide-section.netherpot { border-top: 4px solid var(--accent-purple); }
+        .guide-section.mace { border-top: 4px solid var(--accent-orange); }
+
+        .guide-section h2 {
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            font-family: 'Noto Sans TC', sans-serif;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .guide-section.sword h2 { color: var(--accent-blue); }
+        .guide-section.uhc h2 { color: var(--accent-green); }
+        .guide-section.netherpot h2 { color: var(--accent-purple); }
+        .guide-section.mace h2 { color: var(--accent-orange); }
+
+        .guide-section h3 {
+            font-size: 1.3rem;
+            color: var(--accent-gold);
+            margin: 2rem 0 1rem;
+            font-family: 'Noto Sans TC', sans-serif;
+        }
+
+        .guide-section h4 {
+            font-size: 1.1rem;
+            color: var(--text-white);
+            margin: 1.5rem 0 0.75rem;
+            font-family: 'Noto Sans TC', sans-serif;
+        }
+
+        .guide-section p {
+            color: var(--text-grey);
+            margin-bottom: 1rem;
+            line-height: 1.8;
+        }
+
+        .guide-section ul, .guide-section ol {
+            color: var(--text-grey);
+            margin-left: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .guide-section li {
+            margin-bottom: 0.5rem;
+            line-height: 1.7;
+        }
+
+        .guide-section strong {
+            color: var(--text-white);
+            font-weight: 700;
+        }
+
+        .guide-section em {
+            color: var(--accent-blue);
+            font-style: normal;
+        }
+
+        /* 特殊標記 */
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            margin-right: 0.5rem;
+        }
+
+        .badge-sword { background: rgba(59, 130, 246, 0.2); color: var(--accent-blue); }
+        .badge-uhc { background: rgba(34, 197, 94, 0.2); color: var(--accent-green); }
+        .badge-netherpot { background: rgba(168, 85, 247, 0.2); color: var(--accent-purple); }
+        .badge-mace { background: rgba(251, 146, 60, 0.2); color: var(--accent-orange); }
+
+        /* 技巧卡片 */
+        .technique-card {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 1rem 0;
+        }
+
+        .technique-card h4 {
+            color: var(--accent-blue);
+            margin-top: 0;
+        }
+
+        /* 克制關係表 */
+        .counter-section {
+            background: rgba(251, 191, 36, 0.05);
+            border: 1px solid rgba(251, 191, 36, 0.2);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+        }
+
+        .counter-section h4 {
+            color: var(--accent-gold);
+        }
+
+        /* 頁尾 */
+        footer {
+            max-width: 1200px;
+            margin: 4rem auto 0;
+            padding: 2rem;
+            border-top: 1px solid rgba(59, 130, 246, 0.2);
+            text-align: center;
+            color: var(--text-grey);
+        }
+
+        /* 滾動動畫類 */
+        .scroll-animate {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+        }
+
+        .scroll-animate.fade-up {
+            transform: translateY(30px);
+        }
+
+        .scroll-animate.fade-left {
+            transform: translateX(-30px);
+        }
+
+        .scroll-animate.fade-right {
+            transform: translateX(30px);
+        }
+
+        .scroll-animate.scale {
+            transform: scale(0.9);
+        }
+
+        .scroll-animate.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* 響應式設計 */
+        @media (max-width: 768px) {
+            .site-header {
+                flex-direction: column;
+                gap: 15px;
+                padding: 15px;
+            }
+
+            .header-nav {
+                width: 100%;
+                flex-direction: row;
+                gap: 8px;
+                justify-content: center;
+                flex-wrap: wrap;
+            }
+
+            .nav-link {
+                width: auto;
+                justify-content: center;
+                padding: 8px 14px;
+                font-size: 0.85rem;
+            }
+
+            .page-header {
+                padding: 2rem 1rem;
+            }
+
+            .main-container {
+                padding: 1rem;
+            }
+
+            .guide-section {
+                padding: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="site-header scroll-animate fade-up">
+        <div class="logo-container">
+            <img src="images/logo.png" alt="Formosa Tiers" style="height: 45px; filter: drop-shadow(0 0 10px rgba(59, 130, 246, 0.4));" onerror="this.style.display='none'">
+        </div>
+        
+        <nav class="header-nav">
+            <a href="guide.html" class="nav-link nav-link-active">📖 PVP 指南</a>
+            <a href="tierlist.html" class="nav-link">🏆 排行榜</a>
+            <a href="index.html" class="nav-link">🏠 回首頁</a>
+            <a href="https://discord.gg/yctefdXTvy" target="_blank" class="nav-link nav-link-discord">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037 13.924 13.924 0 0 0-.623 1.282 18.445 18.445 0 0 0-5.46 0 14.155 14.155 0 0 0-.623-1.282.072.072 0 0 0-.078-.037 19.742 19.742 0 0 0-4.886 1.515.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-2.313-9.117-6.046-13.687a.066.066 0 0 0-.03-.027ZM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.419 0 1.334-.956 2.419-2.157 2.419Zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.419 0 1.334-.946 2.419-2.157 2.419Z"/></svg>
+                加入 Discord
+            </a>
+        </nav>
+    </header>
+
+    <!-- 頁面標題 -->
+    <div class="page-header">
+        <h1>⚔️ PVP 指南</h1>
+        <p class="tagline">掌握 Minecraft 1.21+ 各類 PVP 模式的核心技巧與策略，從基礎到進階的完整教學</p>
+    </div>
+
+    <!-- 主內容區 -->
+    <div class="main-container">
+        <!-- 目錄 -->
+        <div class="toc-container">
+            <h2>📑 指南目錄</h2>
+            <ul class="toc-list">
+                <li><a href="#sword" class="sword">⚔️ 鑽石王牌 (Sword)</a></li>
+                <li><a href="#uhc" class="uhc">🏹 UHC 指南</a></li>
+                <li><a href="#netherpot" class="netherpot">🧪 獄髓藥水 (Nether Pot)</a></li>
+                <li><a href="#mace" class="mace">🔨 重錘 (Mace)</a></li>
+            </ul>
+        </div>
+
+        <!-- ===== 鑽石王牌 (Sword) 指南 ===== -->
+        <section id="sword" class="guide-section sword">
+            <h2>⚔️ Minecraft 1.9+ PVP 指南 - 鑽石王牌 (Sword)</h2>
+            
+            <h3>📖 導論</h3>
+            <p>本指南旨在為讀者提供 Minecraft 1.9+ 版本 PVP 技巧之系統化分析。指南內容涵蓋核心概念、戰術應用與實戰策略，旨在協助玩家從基礎能力建立，逐步發展為熟練的鑽石級劍術高手。除了對技術層面的深入探討，本指南亦將觸及心態與反應速度等非技術性要素。</p>
+            <p><strong>建議：</strong>依序循序漸進，並專注於每次僅精進一項技術，直至完全掌握後再進入下一個階段。</p>
+
+            <h3>📋 核心技術清單</h3>
+            <ol>
+                <li><strong>術語理解與記憶</strong>：首先應深入理解並熟記所有 PVP 相關術語</li>
+                <li><strong>衝刺攻擊 (sprint attack)</strong>：掌握衝刺攻擊的施展與維持。相關技術如<em>停滯 W-tap</em> 與 <em>S-tap</em></li>
+                <li><strong>暴擊 (critical hit)</strong>：學習暴擊的發動時機與條件，並精準判斷適當的起跳距離</li>
+                <li><strong>暴擊偏轉 (critical deflection)</strong>：在受到暴擊後立即發動衝刺攻擊反擊</li>
+                <li><strong>連招 (Combo) 與反打 (Hit-select)</strong>：精通連招的正確時機與距離掌握</li>
+                <li><strong>進階暴擊技術</strong>：<em>懲罰暴擊</em> 與 <em>0 擊退暴擊</em></li>
+                <li><strong>高階暴擊應用</strong>：<em>雙重暴擊</em> 與 <em>S-暴擊偏轉</em></li>
+                <li><strong>跳砍 (uppercut)</strong>：快速縮短與對手的距離並發動衝刺攻擊</li>
+                <li><strong>S-暴擊與調整位置</strong>：利用後退走位發動暴擊與保持有利作戰距離</li>
+                <li><strong>閃避與防禦</strong>：掌握閃避攻擊與其他防守型戰術</li>
+            </ol>
+
+            <h3>⚔️ 攻擊模式</h3>
+            <ul>
+                <li><strong>衝刺攻擊 (sprint attack)</strong>：冷卻條 85%-100% 且跑步時。最大擊退效果，是開啟連招的首選</li>
+                <li><strong>暴擊 (critical hit)</strong>：冷卻條 85%-100% 且下落時。額外 50% 傷害，是最大傷害輸出</li>
+                <li><strong>橫掃攻擊 (sweep attack)</strong>：冷卻條 85%-100% 且非跑步時。可攻擊扇形區域內多個目標</li>
+                <li><strong>輕攻擊 (light attack)</strong>：冷卻條 0%-85%。傷害與擊退最低</li>
+                <li><strong>跳躍攻擊 (jump attack)</strong>：冷卻條 85%-100% 且上升中。應用性極低</li>
+            </ul>
+
+            <h3>📝 補充說明</h3>
+            <ul>
+                <li><strong>攻擊範圍</strong>：最遠有效攻擊距離為 3 格</li>
+                <li><strong>攻擊優先權</strong>：衝刺攻擊具有最高的攻擊優先權</li>
+                <li><strong>擊退法則一</strong>：跑步或跳躍前進時遭受攻擊，擊退效果會降低</li>
+                <li><strong>擊退法則二</strong>：承受擊退時發動衝刺攻擊，可減少約 40% 的自身擊退</li>
+                <li><strong>碰撞箱 (Hitbox)</strong>：按住 Shift 鍵下蹲可減少碰撞箱大小</li>
+                <li><strong>聲音提示</strong>：不同攻擊模式會產生獨特的音效</li>
+            </ul>
+
+            <h3>🧑‍🏫 術語定義</h3>
+            <ul>
+                <li><strong>換血 (trading)</strong>：雙方開始互相攻擊並持續交戰的過程</li>
+                <li><strong>第一下 (first hit)</strong>：交戰開始時最先攻擊到對手的攻擊</li>
+                <li><strong>雙重攻擊 (double hit)</strong>：在擊退對手後能再次攻擊而不受反擊</li>
+                <li><strong>先手優勢 (first hit advantage)</strong>：比對手更早發動第一次攻擊</li>
+                <li><strong>震懾 (Stun)</strong>：使對方在短時間內無法移動或接近你</li>
+                <li><strong>擊飛 (juggled)</strong>：正確時機使用衝刺攻擊使對手被擊退至空中</li>
+                <li><strong>間距 (Spacing)</strong>：與對手之間保持或拉開距離的能力</li>
+                <li><strong>風箏 (Kiting)</strong>：透過後退走位持續攻擊同時保持在攻擊範圍外</li>
+                <li><strong>橫向走位 (Strafing)</strong>：利用 A 或 D 鍵進行橫向移動</li>
+            </ul>
+
+            <h3>⚔️ 進攻型技術</h3>
+            <div class="technique-card">
+                <h4>輕攻擊</h4>
+                <p>實用性在於低傷害與低擊退，可用於對手生命值極低時作為終結技，避免因高擊退效果而使對手脫離攻擊範圍。</p>
+            </div>
+            <div class="technique-card">
+                <h4>橫掃攻擊</h4>
+                <ul>
+                    <li><strong>衝刺橫掃 (sprint sweep)</strong>：按住 W 跑步並發動連招，首次為衝刺攻擊，後續皆為橫掃</li>
+                    <li><strong>W 重置橫掃 (W-reset sweep)</strong>：在揮劍前鬆開 W 鍵取消跑步，攻擊後再重新按住 W 鍵</li>
+                </ul>
+            </div>
+            <div class="technique-card">
+                <h4>衝刺攻擊連招</h4>
+                <ul>
+                    <li><strong>W-taps</strong>：攻擊後鬆開 W 鍵再立即按住，循環此動作</li>
+                    <li><strong>S-taps</strong>：攻擊後鬆開 W 鍵並短暫按壓 S 鍵，維持 3 格安全間距</li>
+                    <li><strong>Shift-tap</strong>：利用下蹲 (Shift) 進行連續衝刺攻擊</li>
+                </ul>
+            </div>
+            <div class="technique-card">
+                <h4>反打 (Hit-Select)</h4>
+                <p>在遭受衝刺攻擊時，若能同時維持疾跑並立即發動衝刺攻擊反擊，可減少約 40% 的擊退。</p>
+            </div>
+            <div class="technique-card">
+                <h4>W 重置暴擊</h4>
+                <p>跳躍後，在下落時鬆開 W 鍵並揮劍攻擊。此技術適用於衝刺攻擊連招，或作為第一下攻擊。</p>
+            </div>
+            <div class="technique-card">
+                <h4>懲罰暴擊 (Punishment Critical Hit)</h4>
+                <p>在受到攻擊後，利用所承受之擊退，在下落時進行暴擊。此技術是一種被動反擊。</p>
+            </div>
+            <div class="technique-card">
+                <h4>0 擊退暴擊 (Zero-Knockback Critical Hit)</h4>
+                <p>暴擊後按住 W 鍵等待對手的攻擊，以此降低自身擊退，並僅在對手攻擊後才進行反擊。</p>
+            </div>
+
+            <h3>🛡️ 防守型技術</h3>
+            <div class="technique-card">
+                <h4>暴擊偏轉</h4>
+                <p>在被暴擊後立即進行衝刺攻擊反擊。此技術利用攻擊優先權，將對手擊飛並震懾。</p>
+            </div>
+            <div class="technique-card">
+                <h4>S-暴擊偏轉</h4>
+                <p>在暴擊偏轉後，短暫按壓或按住 S 鍵，與對手保持距離，防止被反擊並增加震懾機會。</p>
+            </div>
+            <div class="technique-card">
+                <h4>雙重暴擊</h4>
+                <p>在受到攻擊後，進行懲罰暴擊並立即再次跳躍發動暴擊。此技術僅在對手使用懲罰暴擊或 0 擊退暴擊時成功。</p>
+            </div>
+            <div class="technique-card">
+                <h4>0 擊退跳</h4>
+                <p>在跑步時，於對手進行衝刺攻擊的同時跳躍。若操作正確，可大幅減少擊退。</p>
+            </div>
+            <div class="technique-card">
+                <h4>S-暴擊</h4>
+                <p>用於脫離劣勢。在暴擊後按壓或按住 S 鍵。此技術亦可用於進攻，透過在下落時按壓 S 鍵暴擊拉開距離。</p>
+            </div>
+
+            <h3>💥 克制關係</h3>
+            <div class="counter-section">
+                <h4>暴擊克制</h4>
+                <ul>
+                    <li>0 擊退暴擊 / 懲罰暴擊 被 連續暴擊 / 雙重暴擊 / 調整位置 / S-暴擊偏轉 所克制</li>
+                    <li>W 重置暴擊 / 雙重暴擊 被 暴擊偏轉 所克制</li>
+                    <li>互換暴擊 被 落下衝刺攻擊偏轉 / 後退橫掃 所克制</li>
+                    <li>0 擊退跳暴擊 被 改變衝刺攻擊時機點 所克制</li>
+                </ul>
+            </div>
+            <div class="counter-section">
+                <h4>衝刺攻擊克制</h4>
+                <ul>
+                    <li>暴擊偏轉 被 0 擊退暴擊 所克制</li>
+                    <li>衝刺攻擊 被 0 擊退跳 所克制</li>
+                    <li>衝刺攻擊 被 Hit-Select 所克制</li>
+                    <li>Hit-Select 被 懲罰橫掃 所克制</li>
+                </ul>
+            </div>
+
+            <h3>⚡ 走位</h3>
+            <ul>
+                <li><strong>短走位</strong>：快速按壓 A/D 鍵進行移動，干擾對手的瞄準</li>
+                <li><strong>搖擺走位</strong>：每次攻擊後改變水平移動方向</li>
+                <li><strong>環形走位</strong>：朝單一方向移動，圍繞對手</li>
+                <li><strong>長走位</strong>：長時間向單側移動，用於脫離戰鬥或追擊</li>
+            </ul>
+
+            <h3>🥇 戰術風格</h3>
+            <ul>
+                <li><strong>進攻型</strong>：以主動攻擊為主，擅長奪取第一下攻擊並發動連招</li>
+                <li><strong>防守型</strong>：以閃避與反擊為主，使對手更難命中你</li>
+            </ul>
+
+            <h3>📌 實戰要點</h3>
+            <ul>
+                <li>首要攻擊應為暴擊，可採取直線前跳</li>
+                <li>在暴擊時，應在最後一刻鬆開 W 鍵，以最大化移動距離並降低擊退</li>
+                <li>順應直覺進行操作，將技巧內化為肌肉記憶</li>
+                <li>當被地面暴擊時，最安全的應對方式是暴擊偏轉</li>
+                <li>獲取第一下攻擊與震懾對手是取得優勢的唯一途徑</li>
+                <li>切勿允許對手進行「免費暴擊」</li>
+            </ul>
+
+            <h3>💠 進階技術</h3>
+            <div class="technique-card">
+                <h4>雙方暴擊克制</h4>
+                <p>當雙方同時暴擊後，你可在落地後立即發動衝刺攻擊。此技術會被 0 擊退暴擊所克制。</p>
+            </div>
+            <div class="technique-card">
+                <h4>震懾反擊</h4>
+                <p>在被震懾後，立即使用 0 擊退跳來克制對手的下一次衝刺攻擊。</p>
+            </div>
+            <div class="technique-card">
+                <h4>0 擊退跳暴擊</h4>
+                <p>在受到擊退後，先進行一次懲罰暴擊，落地後立即再次起跳並重複。此技術能讓你近身攻擊。</p>
+            </div>
+            <div class="technique-card">
+                <h4>蹲下閃避</h4>
+                <p>在對手揮劍前一刻立即蹲下以閃避攻擊。此技術主要用於對抗地面暴擊。</p>
+            </div>
+
+            <h3>⚔️ 技術層面要素</h3>
+            <ul>
+                <li><strong>瞄準 (Aim)</strong>：最關鍵的要素</li>
+                <li><strong>範圍控制 (Range Control)</strong>：攻擊範圍外的距離感知</li>
+                <li><strong>間距控制 (Spacing)</strong>：攻擊範圍內的精準控制</li>
+                <li><strong>時機掌控 (Timing)</strong>：掌握揮劍與技巧的精準時機</li>
+                <li><strong>擊退控制 (Knockback Control)</strong>：控制自身擊退</li>
+                <li><strong>預測 (Prediction)</strong>：預判對手下一步行動</li>
+            </ul>
+        </section>
+
+        <!-- ===== UHC 指南 ===== -->
+        <section id="uhc" class="guide-section uhc">
+            <h2>🏹 Minecraft 1.21 UHC 指南</h2>
+            
+            <p><strong>實戰UHC</strong>：生存型UHC，需從收集資源開始，任何道具皆可使用</p>
+            <p><strong>對戰UHC</strong>：以提供特定裝備及道具之UHC，可直接對戰</p>
+
+            <h3>🪓 斧頭、劍與盾</h3>
+            <div class="technique-card">
+                <h4>斧頭</h4>
+                <ul>
+                    <li>破盾能力強</li>
+                    <li>造成更多傷害但速度較慢</li>
+                    <li>容易學習但難以完全掌握</li>
+                </ul>
+            </div>
+            <div class="technique-card">
+                <h4>劍</h4>
+                <ul>
+                    <li>更快和更多的DPS</li>
+                    <li>較難學習但最容易掌握</li>
+                </ul>
+            </div>
+            <div class="technique-card">
+                <h4>盾牌</h4>
+                <ul>
+                    <li>有效阻止敵人Combo</li>
+                    <li>可配合收/舉盾的時機攻擊，擾亂對手節奏</li>
+                </ul>
+            </div>
+
+            <h3>⚔️ 專精方向</h3>
+            <div class="technique-card">
+                <h4>專精於盾牌和劍 ❌ 🪓</h4>
+                <p>不少玩家不使用斧頭，完全憑藉盾牌劍的技巧贏得比賽。這種打法非常冒險，需完全掌握對手的盾牌時機，<strong>不推薦新手</strong>。</p>
+                <ul>
+                    <li>預判對手何時攻擊</li>
+                    <li>放置輔助型道具讓對手放下盾牌</li>
+                    <li>當對手破除你的盾時，可以用蜘蛛網黏住他或者後撤</li>
+                </ul>
+            </div>
+            <div class="technique-card">
+                <h4>專精於劍 ⚔️</h4>
+                <p>把UHC打成鑽石王牌，對對手進行破盾並直接切換到劍開始連擊。這是一種非常激進的遊戲風格。</p>
+                <ul>
+                    <li>需善用劍的技巧</li>
+                    <li>開局直接破除對手盾牌</li>
+                    <li>破盾後直接用劍連擊對手</li>
+                    <li>最具殺傷力的是連續暴擊</li>
+                </ul>
+            </div>
+            <div class="technique-card">
+                <h4>專精於斧頭 🪓</h4>
+                <p>只用斧頭，沒有劍。這種遊戲風格很少被有效地使用。</p>
+                <ul>
+                    <li>盾牌在使用斧頭時更為重要，因為沒有它，您將會被劍連擊致死</li>
+                    <li>若不幸被破盾，必須盡快地用輔助型道具將自己與對手拉開距離</li>
+                </ul>
+            </div>
+
+            <h3>🔥 輔助型道具</h3>
+            <div class="technique-card">
+                <h4>岩漿</h4>
+                <ul>
+                    <li><strong>進攻性岩漿</strong>：在連擊對方幾下之後使用熔岩桶，擾亂敵人</li>
+                    <li><strong>防禦性岩漿</strong>：獲得對對手的戰略優勢，例如拉開距離或獲得簡單的盾牌禁用</li>
+                </ul>
+            </div>
+            <div class="technique-card">
+                <h4>蜘蛛網</h4>
+                <ul>
+                    <li><strong>基本網</strong>：當對手向你移動時放置在地板上</li>
+                    <li><strong>跑網</strong>：當需要逃離對手時使用，拖住對手爭取時間</li>
+                    <li><strong>頭網</strong>：直接放在對手頭上的網</li>
+                    <li><strong>保護網</strong>：包覆自己全身的網，緊急情況下使用</li>
+                </ul>
+            </div>
+            <div class="technique-card">
+                <h4>野莓 (限實戰UHC)</h4>
+                <p>利用野莓的特性來拖住敵人的行動，野莓能讓人緩速以及強制落地</p>
+            </div>
+            <div class="technique-card">
+                <h4>水和方塊</h4>
+                <p>水是一種能快速擴散範圍的流體，配合方塊能加強水的擴散範圍，使敵人更難以立即脫困</p>
+            </div>
+
+            <h3>🏹 遠程武器</h3>
+            <div class="technique-card">
+                <h4>弓</h4>
+                <p>在Minecraft原版中，弓的傷害非常強力（對無護甲者造成 8 顆心傷害）。在1.9+中，你在向上的過程會影響箭矢，所以跳射有點不同。你只需要等到在跳躍的頂點進行射擊。</p>
+            </div>
+            <div class="technique-card">
+                <h4>弩</h4>
+                <p>弩可以隨時裝載和準備使用，是非常有用的終結武器。當被附有穿刺附魔時，能夠穿過盾牌。</p>
+            </div>
+            <div class="technique-card">
+                <h4>三叉戟 (限實戰UHC)</h4>
+                <p>所有三叉戟投擲都具有相同的傷害（4顆心對無裝，2顆對全鐵，1顆對全鑽石）。</p>
+            </div>
+            <div class="technique-card">
+                <h4>TNT礦車 (限實戰UHC)</h4>
+                <p>TNT 礦車是單發武器，常見陷阱是將礦車放在高處。</p>
+            </div>
+            <div class="technique-card">
+                <h4>爆破煙火 (限實戰UHC)</h4>
+                <p>將弩裝上爆破煙火並瞄準敵人腳部射擊，能對敵人造成大量傷害</p>
+            </div>
+
+            <h3>👥 團戰</h3>
+            <div class="technique-card">
+                <h4>團隊合作</h4>
+                <ul>
+                    <li>良好的溝通對於贏得比賽至關重要</li>
+                    <li>消極永遠不會幫助你玩遊戲的能力</li>
+                    <li>如果你過度使用「我死了我死了」，沒有人會願意幫助你</li>
+                    <li>在大型團隊戰鬥中，您應該始終嘗試獲得 2v1</li>
+                </ul>
+            </div>
+
+            <h3>🌍 地獄 (實戰UHC)</h3>
+            <div class="technique-card">
+                <h4>終界水晶</h4>
+                <p>目前遊戲中最OverPowered的物品。要製作終界水晶，你需要一個幽靈之淚和一顆終界之眼和玻璃。</p>
+            </div>
+            <div class="technique-card">
+                <h4>重生錨</h4>
+                <p>另一個傷害極高的爆破物品。要合成重生錨，你需要哭泣黑曜石和螢光石。</p>
+            </div>
+
+            <h3>🕳️ 地洞戰 (實戰UHC)</h3>
+            <div class="technique-card">
+                <h4>一格暴擊</h4>
+                <p>在1.13版本後能透過游泳的特性讓角色趴下，讓身高僅剩一格方塊的高度進行挖礦</p>
+            </div>
+            <div class="technique-card">
+                <h4>兩格暴擊</h4>
+                <p>在兩格高的狹窄環境，抓取精確的時機在極短的時間內進行暴擊</p>
+            </div>
+            <div class="technique-card">
+                <h4>一格跑</h4>
+                <p>先對自己澆一桶水接著收回然後向前跑跳步，即可達成一格跑</p>
+            </div>
+
+            <h3>🏅 UHC 頂尖玩家</h3>
+            <ul>
+                <li><strong>Coldified</strong> [世界HT1] - 擁有最平衡的遊戲風格之一</li>
+                <li><strong>Juan_Clean</strong> [世界HT1] - UHC歷史上最長的tier 1</li>
+                <li><strong>ViviKai</strong> [世界HT1]</li>
+                <li><strong>Hosthan</strong> [世界LT1]</li>
+                <li><strong>JackerAcid</strong> [世界LT2]</li>
+                <li><strong>Aximity</strong> [世界LT2]</li>
+            </ul>
+        </section>
+
+        <!-- ===== 獄髓藥水 (Nether Pot) 指南 ===== -->
+        <section id="netherpot" class="guide-section netherpot">
+            <h2>🧪 Minecraft 1.21 獄髓藥水 (Netherite Potion) 指南</h2>
+            
+            <h3>⚙️ 設置</h3>
+            <div class="technique-card">
+                <h4>視角廣角效果 (FOV Effects)</h4>
+                <p>強烈建議把視角廣角效果調到0，這能讓你擁有很好的遊戲體驗。</p>
+            </div>
+            <div class="technique-card">
+                <h4>受傷抖動效果 (Damage Tilt)</h4>
+                <p>建議把受傷抖動效果調到60以下，因為預設的100對有些玩家來說有點太大幅度的晃動。</p>
+            </div>
+            <div class="technique-card">
+                <h4>InventoryHUD+ 模組</h4>
+                <p>安裝此模組能讓你從遊戲介面就能看到自己裝備剩下多少耐久度。</p>
+            </div>
+
+            <h3>❤️ 治療</h3>
+            <p>在Netherite potion 中保持你的飽食度在一定的數值，並且在敵人吃金蘋果前/後跟著一起吃，就可以讓你繼續跟敵人換血。</p>
+
+            <h3>🎯 走位與瞄準</h3>
+            <p>你並不需要誇張的瞄準如360度轉頭，如果選擇貼在地面，選擇用「懲罰暴擊」的方法，就可以很穩定的發揮。</p>
+            <p>懲罰暴擊請參考鑽石王牌的懲罰暴擊。</p>
+            <p>如果你以貼近地面的方式遊玩，你可以有效地做出很多combo來擊退你的對手。</p>
+
+            <h4>💡 建議</h4>
+            <ul>
+                <li>利用懲罰暴擊的方式能讓你有效的提升容錯率</li>
+                <li>並非完全不能跳躍，但地面打法更穩定</li>
+            </ul>
+        </section>
+
+        <!-- ===== 重錘 (Mace) 指南 ===== -->
+        <section id="mace" class="guide-section mace">
+            <h2>🔨 Minecraft 1.21 重錘 (Mace) 指南</h2>
+            
+            <h3>⚔️ 重錘總覽</h3>
+            <p>重錘是 Minecraft 在 1.21 版本中首次登場的全新武器，與劍或斧頭那種固定傷害不同，重錘的威力來自下落距離：玩家在攻擊前落下的距離越遠，造成的傷害就越高。</p>
+
+            <h4>🔧 重擊（Slam Attack）機制</h4>
+            <p>要觸發重錘的特殊攻擊，玩家必須在攻擊前下落至少 1.5 格。這種攻擊稱為「重擊」。</p>
+
+            <h4>📈 傷害計算</h4>
+            <ul>
+                <li>下落 1～3 格 → 每格增加 4 點生命值（❤️❤️） 傷害</li>
+                <li>下落 4～8 格 → 每格增加 2 點生命值（❤️） 傷害</li>
+                <li>下落 9 格以上 → 每增加 1 格增加 0.5 點生命值（半顆 ❤️） 傷害</li>
+            </ul>
+            <p><strong>重點總結：</strong>短距離落下能打出強勁爆發，而極端高處的下落則會持續增加傷害，但成長幅度較小。</p>
+
+            <h3>🪄 重錘附魔</h3>
+            <div class="technique-card">
+                <h4>破甲（Breach）</h4>
+                <p>攻擊時無視敵方 60% 的護甲值（等級IV）</p>
+            </div>
+            <div class="technique-card">
+                <h4>緻密（Density）</h4>
+                <p>每級附魔會讓每下落一格的重擊傷害增加 0.5 點（❤️ × 0.25）</p>
+            </div>
+
+            <h3>⚔️ 使用時機建議</h3>
+            <ul>
+                <li><strong>🧱 破甲重錘（Breach Mace）</strong> → 適合短距離下落（約 7 格以下）的戰鬥</li>
+                <li><strong>🪨 緻密重錘（Density Mace）</strong> → 適合高落差（7 格以上）的情況，可持續疊加更高的重擊傷害</li>
+            </ul>
+
+            <h3>🎮 重錘在 PvP 中的特別之處</h3>
+            <ul>
+                <li><strong>🌀 依靠移動的高操作上限</strong>：使用重錘不僅是拼準度或近戰技巧，更考驗移動與時機</li>
+                <li><strong>🛡️ 反制地面</strong>：能懲罰那些死守地面的玩家，從空中壓制他們</li>
+            </ul>
+
+            <h3>🪧 重錘戰鬥風格 (Playstyle)</h3>
+            <div class="technique-card">
+                <h4>⚔️ 地面型（Ground, Melee）</h4>
+                <p>主要留在地面，依靠破防換裝與近距離連擊輸出。</p>
+                <ul>
+                    <li>優點：穩定、安全，傷害一致</li>
+                    <li>缺點：與空戰風格相比，爆發力較低且容易暴斃</li>
+                </ul>
+            </div>
+            <div class="technique-card">
+                <h4>⚖️ 混合型（Hybrid）</h4>
+                <p>結合地面戰與空中重擊，靈活切換戰鬥節奏。</p>
+                <ul>
+                    <li>優點：多變、難以預測，能適應多種情況</li>
+                    <li>缺點：不夠專精，可能被純地面或純空戰玩家壓制</li>
+                </ul>
+                <p>💡 個人最推薦的風格</p>
+            </div>
+            <div class="technique-card">
+                <h4>🦅 空戰型（Aerial）</h4>
+                <p>主宰天空，以俯衝攻擊、風衝壓制與空中優勢擊敵。</p>
+                <ul>
+                    <li>優點：高傷害，特別克制防守或很狗的玩家</li>
+                    <li>缺點：高風險，一旦空擊落空可能暴露破綻，甚至不小心把自己摔死</li>
+                </ul>
+            </div>
+
+            <h3>⛓️‍💥 重錘基礎技巧</h3>
+            <div class="technique-card">
+                <h4>屬性切換（Attribute Swap）</h4>
+                <p>屬性切換分為兩種，分別為破甲切換和緻密切換</p>
+                <ul>
+                    <li>先以主要武器攻擊（如劍或斧）</li>
+                    <li>攻擊瞬間切換至重錘</li>
+                    <li>這樣能縮短重錘冷卻時間，同時讓攻擊套用重錘的特殊屬性和附魔</li>
+                </ul>
+                <p>💡 提示：在所有情況下都要使用屬性切換，熟練使用屬性切換可以有效最大化傷害輸出</p>
+            </div>
+            <div class="technique-card">
+                <h4>🪚 破甲切換 (Breach swap)</h4>
+                <p>通常配合劍或斧來使用，相當給劍或斧附上破甲附魔，通常在掉落高度<7時使用，也可以在地面配合暴擊打出大量傷害。</p>
+            </div>
+            <div class="technique-card">
+                <h4>🪧 緻密切換 (Density swap)</h4>
+                <p>通常在高空時使用，可以在使用鞘翅後透過空手的極短冷卻來達成高空爆擊的效果。</p>
+            </div>
+        </section>
+
+        <!-- 頁尾 -->
+        <footer>
+            <p>© 2024 福爾摩沙 Tier List - 台灣頂尖 Minecraft PVP 社群</p>
+            <p>提供給喜愛 Minecraft PVP 的玩家一個交流與精進的平台</p>
+        </footer>
+    </div>
+
+    <script>
+        // 滾動動畫 (Intersection Observer)
+        const scrollElements = document.querySelectorAll('.scroll-animate');
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach((entry) => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, { threshold: 0.1 });
+
+        scrollElements.forEach((el) => observer.observe(el));
+    </script>
+</body>
+</html>

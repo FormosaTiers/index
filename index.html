@@ -3,10 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Formosa Tiers - 台灣頂尖玩家排行榜</title>
+    <title>福爾摩沙 Tier List - 台灣頂尖 Minecraft PVP 社群</title>
     <link rel="icon" href="icon.png?v=2" type="image/png">
-    <script src="https://unpkg.com/skinview3d@3.0.0/bundles/skinview3d.bundle.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Noto+Sans+TC:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Noto+Sans+TC:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
         :root {
             --bg-main: #05070a;
@@ -14,40 +13,28 @@
             --bg-card: #1c1f26;
             --text-white: #f8f9fa;
             --text-grey: #94a3b8;
-            
-            /* Tier Colors */
-            --tier1-color: #fbbf24;
-            --tier2-color: #cbd5e1;
-            --tier3-color: #fb923c;
-            --tier4-color: #60a5fa;
-            --tier5-color: #4ade80;
-            
             --accent-blue: #3b82f6;
-            --modal-overlay: rgba(0, 0, 0, 0.9);
-            --vanilla-purple: #d8b4fe; /* 水晶專屬色 */
+            --accent-gold: #fbbf24;
+            --accent-orange: #fb923c;
+            --primary-color: #5865F2;
         }
 
-        /* 全域樣式優化 */
-        * { box-sizing: border-box; transition: background 0.3s, border 0.3s, transform 0.2s; }
-        
-        ::-webkit-scrollbar { width: 6px; height: 6px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: #2d3139; border-radius: 10px; }
-        ::-webkit-scrollbar-thumb:hover { background: var(--accent-blue); }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
         body {
             background-color: var(--bg-main);
             color: var(--text-white);
             font-family: 'Inter', 'Noto Sans TC', sans-serif;
-            margin: 0;
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center; 
-            min-height: 100vh;
+            line-height: 1.6;
+            overflow-x: hidden;
             background-image: 
                 radial-gradient(circle at 20% 20%, rgba(59, 130, 246, 0.05) 0%, transparent 40%),
                 radial-gradient(circle at 80% 80%, rgba(251, 191, 36, 0.05) 0%, transparent 40%);
+            background-attachment: fixed;
         }
 
         /* --- 頂部 Header --- */
@@ -55,7 +42,7 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            margin-bottom: 30px;
+            margin: 20px auto 30px;
             padding: 15px 25px;
             background: var(--bg-panel);
             backdrop-filter: blur(12px);
@@ -66,666 +53,940 @@
             box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
 
-        .header-controls {
+        .header-nav {
             display: flex;
             align-items: center;
-            gap: 20px;
+            gap: 8px;
         }
 
-        .discord-btn {
+        .nav-link {
+            color: var(--text-grey);
+            text-decoration: none;
+            padding: 10px 18px;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .nav-link:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text-white);
+        }
+
+        .nav-link-discord {
             background: linear-gradient(135deg, #5865F2 0%, #4752C4 100%);
             color: white;
-            text-decoration: none;
-            padding: 10px 20px;
-            border-radius: 14px;
-            font-weight: 800;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-size: 0.85rem;
             box-shadow: 0 4px 15px rgba(88, 101, 242, 0.3);
         }
-        
-        .discord-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(88, 101, 242, 0.5); }
 
-        .top-search {
-            background: rgba(0,0,0,0.4);
-            border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 14px;
-            padding: 10px 18px;
-            width: 240px; 
-            display: flex;
-            align-items: center;
+        .nav-link-discord:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(88, 101, 242, 0.5);
+            background: linear-gradient(135deg, #6777F2 0%, #5a62c9 100%);
         }
 
-        .top-search:focus-within { border-color: var(--accent-blue); background: rgba(0,0,0,0.6); }
-
-        .top-search input {
-            background: transparent;
-            border: none;
-            color: #fff;
-            font-size: 0.9rem;
-            width: 100%;
-            outline: none;
+        /* 動畫定義 */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
-        /* --- 導航列 --- */
-        .navbar {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 30px;
-            overflow-x: auto;
-            padding: 5px;
-            width: 100%;
-            max-width: 1260px;
-            scrollbar-width: none;
-        }
-        .navbar::-webkit-scrollbar { display: none; }
-
-        .nav-item {
-            padding: 12px 24px;
-            color: var(--text-grey);
-            cursor: pointer;
-            font-weight: 700;
-            font-size: 0.95rem;
-            white-space: nowrap;
-            background: var(--bg-panel);
-            border-radius: 16px;
-            border: 1px solid rgba(255,255,255,0.05);
-            backdrop-filter: blur(8px);
-        }
-        
-        .nav-item:hover { color: #fff; background: rgba(255,255,255,0.08); transform: translateY(-2px); }
-
-        .nav-item.active {
-            color: white;
-            background: var(--accent-blue);
-            border-color: rgba(255,255,255,0.2);
-            box-shadow: 0 8px 20px rgba(59, 130, 246, 0.4);
+        @keyframes fadeInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
         }
 
-        /* --- Tier Board --- */
-        .tier-board {
-            display: flex;
-            gap: 20px;
-            overflow-x: auto;
-            padding-bottom: 40px;
-            width: 100%;
-            max-width: 1260px;
-            align-items: flex-start;
+        @keyframes fadeInRight {
+            from {
+                opacity: 0;
+                transform: translateX(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
         }
 
-        .tier-column {
-            flex: 0 0 235px;
-            background: var(--bg-panel);
-            border-radius: 20px;
+        @keyframes scaleIn {
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        /* 滾動動畫類 */
+        .scroll-animate {
+            opacity: 0;
+            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+        }
+
+        .scroll-animate.fade-up {
+            transform: translateY(30px);
+        }
+
+        .scroll-animate.fade-left {
+            transform: translateX(-30px);
+        }
+
+        .scroll-animate.fade-right {
+            transform: translateX(30px);
+        }
+
+        .scroll-animate.scale {
+            transform: scale(0.9);
+        }
+
+        .scroll-animate.visible {
+            opacity: 1;
+            transform: translate(0) scale(1);
+        }
+
+        /* 視差效果 */
+        .parallax-bg {
+            position: relative;
             overflow: hidden;
-            border: 1px solid rgba(255,255,255,0.05);
-            box-shadow: 0 8px 30px rgba(0,0,0,0.3);
+        }
+
+        .parallax-bg::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-attachment: fixed;
+            background-size: cover;
+            background-position: center;
+            z-index: -1;
+        }
+
+        /* 應用導航動畫 */
+        nav {
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        /* 主英雄區段 */
+        .hero {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 4rem 2rem;
+            text-align: center;
+            position: relative;
+        }
+
+        .hero-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0;
+            z-index: -1;
+            transition: opacity 1s ease-in-out;
+        }
+
+        .hero-bg.active {
+            opacity: 0.3;
+        }
+
+        .hero-content h1 {
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 900;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #ffffff 0%, var(--accent-blue) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-family: 'Noto Sans TC', sans-serif;
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        .hero-content .tagline {
+            font-size: 1.25rem;
+            color: var(--text-grey);
+            margin-bottom: 2rem;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            line-height: 1.8;
+            animation: fadeInUp 0.8s ease-out 0.2s backwards;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 2rem;
+        }
+
+        .btn {
+            padding: 0.75rem 2rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-block;
+            font-family: 'Noto Sans TC', sans-serif;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent-blue) 0%, #2563eb 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(59, 130, 246, 0.3);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 2px solid var(--accent-blue);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(59, 130, 246, 0.1);
+            transform: translateY(-2px);
+        }
+
+        /* 特色區段 */
+        .features {
+            max-width: 1200px;
+            margin: 4rem auto;
+            padding: 2rem;
+        }
+
+        .features h2 {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 3rem;
+            color: var(--accent-gold);
+            font-family: 'Noto Sans TC', sans-serif;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .feature-card {
+            background: var(--bg-card);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            border-radius: 12px;
+            padding: 2rem;
+            transition: all 0.3s;
             backdrop-filter: blur(10px);
         }
 
-        .tier-header {
-            padding: 18px;
-            text-align: center;
-            font-weight: 800;
-            font-size: 1.1rem;
-            letter-spacing: 1px;
+        .feature-card:hover {
+            border-color: var(--accent-blue);
+            background: rgba(59, 130, 246, 0.05);
+            transform: translateY(-5px);
         }
 
-        .t1-header { color: var(--tier1-color); border-top: 4px solid var(--tier1-color); background: linear-gradient(180deg, rgba(251,191,36,0.1) 0%, transparent 100%); }
-        .t2-header { color: var(--tier2-color); border-top: 4px solid var(--tier2-color); background: linear-gradient(180deg, rgba(203,213,225,0.1) 0%, transparent 100%); }
-        .t3-header { color: var(--tier3-color); border-top: 4px solid var(--tier3-color); background: linear-gradient(180deg, rgba(251,146,60,0.1) 0%, transparent 100%); }
-        .t4-header { color: var(--tier4-color); border-top: 4px solid var(--tier4-color); background: linear-gradient(180deg, rgba(96,165,250,0.1) 0%, transparent 100%); }
-        .t5-header { color: var(--tier5-color); border-top: 4px solid var(--tier5-color); background: linear-gradient(180deg, rgba(74,222,128,0.1) 0%, transparent 100%); }
-
-        .player-list { padding: 12px; min-height: 100px; }
-
-        .player-card {
-            background: rgba(255,255,255,0.03);
-            margin-bottom: 8px;
-            padding: 12px 14px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-radius: 12px;
-            cursor: pointer;
-            border: 1px solid transparent;
+        .feature-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
         }
 
-        .player-card:hover { 
-            background: rgba(255,255,255,0.08); 
-            transform: scale(1.02);
-            border-color: rgba(255,255,255,0.1);
-        }
-
-        .p-name { font-weight: 600; font-size: 0.85rem; }
-
-        .subtier-badge {
-            font-size: 0.85rem;
-            font-weight: 900;
-            padding: 2px 6px;
-            border-radius: 6px;
-            color: #000;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-        }
-
-        /* --- Modal Box --- */
-        .modal-overlay {
-            position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            background: var(--modal-overlay);
-            display: none;
-            justify-content: center;
-            align-items: center;
-            z-index: 9999;
-            backdrop-filter: blur(12px);
-        }
-
-        .modal-container {
-            background: #0d1117;
-            width: 95%;
-            max-width: 1000px;
-            max-height: 85vh;
-            border-radius: 28px;
-            overflow: hidden;
-            display: flex;
-            border: 1px solid rgba(255,255,255,0.1);
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
-            animation: modalPop 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-            position: relative;
-        }
-
-        @keyframes modalPop {
-            from { transform: translateY(20px) scale(0.95); opacity: 0; }
-            to { transform: translateY(0) scale(1); opacity: 1; }
-        }
-
-        .modal-skin-section {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            min-width: 360px; 
-            padding: 30px;
-            background: radial-gradient(circle at center, #1a1f35 0%, #05070a 100%);
-            border-right: 1px solid rgba(255,255,255,0.05);
-        }
-
-        #skin_container {
-            width: 300px !important;
-            height: 400px !important;
-            filter: drop-shadow(0 0 30px rgba(59, 130, 246, 0.2));
-        }
-
-        .modal-info-section {
-            flex: 1;
-            padding: 40px;
-            overflow-y: auto;
-        }
-
-        .modal-close {
-            position: absolute;
-            top: 25px; right: 25px;
-            color: var(--text-grey);
-            font-size: 32px;
-            cursor: pointer;
-            z-index: 100;
-            line-height: 1;
-        }
-        .modal-close:hover { color: #fff; transform: rotate(90deg); }
-
-        .info-title { font-size: 2.2rem; font-weight: 800; margin-bottom: 25px; color: #fff; letter-spacing: -1px; }
-
-        /* 所有模式階級的網格佈局優化 */
-        .info-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-            gap: 12px;
-            margin-bottom: 35px;
-        }
-
-        .info-tier-card {
-            background: rgba(255,255,255,0.02);
-            padding: 15px;
-            border-radius: 16px;
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            border: 1px solid rgba(255,255,255,0.05);
-            position: relative;
-            overflow: hidden;
-        }
-        .info-tier-card::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; width: 4px; height: 100%;
-            background: var(--accent-blue);
-            opacity: 0.5;
-        }
-
-        /* 水晶分頁特別卡片樣式 */
-        .info-tier-card.vanilla-special::before { background: var(--vanilla-purple); opacity: 0.8; }
-        .info-tier-card.vanilla-special { background: rgba(216, 180, 254, 0.05); border: 1px solid rgba(216, 180, 254, 0.2); }
-
-        .info-tier-card .mode-label { 
-            font-size: 0.7rem; 
-            color: var(--text-grey); 
-            text-transform: uppercase; 
-            font-weight: 800; 
-            letter-spacing: 0.5px;
-        }
-
-        .info-tier-card .rank-container {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .info-tier-card .rank-value { 
-            font-weight: 900; 
-            font-size: 1.2rem; 
-        }
-
-        .tier-tag {
-            padding: 2px 8px;
-            border-radius: 6px;
-            font-size: 0.65rem;
-            font-weight: 900;
-            color: #000;
-        }
-
-        /* 測試表格優化 */
-        .test-table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 0.85rem;
-            margin-top: 15px;
-        }
-
-        .test-table th { text-align: left; color: var(--text-grey); padding: 12px; border-bottom: 1px solid rgba(255,255,255,0.1); font-weight: 600; font-size: 0.75rem; text-transform: uppercase; }
-        .test-table td { padding: 15px 12px; border-bottom: 1px solid rgba(255,255,255,0.03); }
-
-        .score-box {
-            background: rgba(255,255,255,0.05);
-            padding: 4px 8px;
-            border-radius: 6px;
-            font-family: 'Courier New', monospace;
-            font-weight: 700;
-        }
-
-        .outcome-badge {
-            background: rgba(59, 130, 246, 0.15);
+        .feature-card h3 {
+            font-size: 1.25rem;
+            margin-bottom: 0.5rem;
             color: var(--accent-blue);
-            padding: 4px 10px;
-            border-radius: 8px;
-            font-weight: 800;
-            font-size: 0.75rem;
-            display: inline-block;
+            font-family: 'Noto Sans TC', sans-serif;
         }
 
-        @media (max-width: 900px) {
-            .modal-container { flex-direction: column; max-height: 90vh; }
-            .modal-skin-section { width: 100%; border-right: none; border-bottom: 1px solid rgba(255,255,255,0.05); min-width: auto; }
-            #skin_container { width: 220px !important; height: 300px !important; }
-            .site-header { flex-direction: column; gap: 20px; padding: 20px; }
-            .header-controls { width: 100%; justify-content: center; }
-            .top-search { width: 100%; }
+        .feature-card p {
+            color: var(--text-grey);
+            line-height: 1.7;
+        }
+
+        /* 遊戲模式區段 */
+        .modes {
+            max-width: 1200px;
+            margin: 4rem auto;
+            padding: 2rem;
+        }
+
+        .modes h2 {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 3rem;
+            color: var(--accent-orange);
+            font-family: 'Noto Sans TC', sans-serif;
+        }
+
+        .modes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .mode-card {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(251, 191, 36, 0.05));
+            border: 2px solid rgba(251, 191, 36, 0.3);
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .mode-card:hover {
+            border-color: var(--accent-gold);
+            background: linear-gradient(135deg, rgba(251, 191, 36, 0.15), rgba(251, 191, 36, 0.05));
+            transform: scale(1.05);
+        }
+
+        .mode-icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .mode-card h3 {
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+            color: var(--accent-gold);
+            font-family: 'Noto Sans TC', sans-serif;
+        }
+
+        .mode-card p {
+            font-size: 0.9rem;
+            color: var(--text-grey);
+        }
+
+        /* 統計區段 */
+        .stats {
+            max-width: 1200px;
+            margin: 4rem auto;
+            padding: 3rem 2rem;
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(251, 191, 36, 0.05));
+            border-radius: 16px;
+            border: 1px solid rgba(59, 130, 246, 0.2);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            text-align: center;
+        }
+
+        .stat {
+            padding: 1rem;
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 900;
+            color: var(--accent-gold);
+            font-family: 'Noto Sans TC', sans-serif;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: var(--text-grey);
+            font-size: 1rem;
+        }
+
+        /* 行動號召區段 */
+        .cta {
+            max-width: 1200px;
+            margin: 4rem auto;
+            padding: 3rem 2rem;
+            background: linear-gradient(135deg, var(--accent-blue), #1d4ed8);
+            border-radius: 16px;
+            text-align: center;
+        }
+
+        .cta h2 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            font-family: 'Noto Sans TC', sans-serif;
+        }
+
+        .cta p {
+            font-size: 1.1rem;
+            margin-bottom: 2rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* 頁尾 */
+        footer {
+            max-width: 1200px;
+            margin: 4rem auto 0;
+            padding: 2rem;
+            border-top: 1px solid rgba(59, 130, 246, 0.2);
+            text-align: center;
+            color: var(--text-grey);
+        }
+
+        .footer-content {
+            margin-bottom: 1rem;
+        }
+
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            margin: 1rem 0;
+        }
+
+        .social-links a {
+            color: var(--accent-blue);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .social-links a:hover {
+            color: var(--accent-gold);
+        }
+
+        /* 響應式設計 */
+        @media (max-width: 1024px) {
+            .hero-content h1 {
+                font-size: 3rem;
+            }
+
+            .features-grid,
+            .modes-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            body {
+                padding: 15px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .site-header {
+                flex-direction: column;
+                gap: 15px;
+                padding: 15px;
+            }
+
+            .header-nav {
+                width: 100%;
+                flex-direction: row;
+                gap: 8px;
+                justify-content: center;
+                flex-wrap: wrap;
+            }
+
+            .nav-link {
+                width: auto;
+                justify-content: center;
+                padding: 8px 14px;
+                font-size: 0.85rem;
+            }
+
+            .hero {
+                padding: 3rem 1.5rem;
+            }
+
+            .hero-content h1 {
+                font-size: 2rem;
+            }
+
+            .hero-content .tagline {
+                font-size: 1rem;
+            }
+
+            .features,
+            .modes,
+            .stats,
+            .cta {
+                padding: 1.5rem;
+                margin: 2rem auto;
+            }
+
+            .features h2,
+            .modes h2 {
+                font-size: 1.8rem;
+            }
+
+            .features-grid,
+            .modes-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 1.5rem;
+            }
+
+            .cta h2 {
+                font-size: 1.5rem;
+            }
+
+            .cta p {
+                font-size: 1rem;
+            }
+
+            .hero-buttons {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .btn {
+                text-align: center;
+                padding: 0.7rem 1.5rem;
+            }
+
+            nav {
+                padding: 0.8rem 1rem;
+            }
+
+            .nav-container {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+        }
+
+        @media (max-width: 640px) {
+            body {
+                padding: 10px;
+            }
+
+            .site-header {
+                flex-direction: column;
+                gap: 15px;
+                padding: 15px;
+            }
+
+            .header-nav {
+                width: 100%;
+                flex-direction: column;
+                gap: 8px;
+                justify-content: center;
+            }
+
+            .nav-link {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .hero {
+                padding: 2rem 1rem;
+            }
+
+            .hero-content h1 {
+                font-size: 1.6rem;
+            }
+
+            .hero-content .tagline {
+                font-size: 0.9rem;
+                line-height: 1.6;
+            }
+
+            .features,
+            .modes,
+            .stats,
+            .cta {
+                padding: 1.2rem;
+                margin: 1.5rem auto;
+            }
+
+            .features h2,
+            .modes h2 {
+                font-size: 1.4rem;
+                margin-bottom: 1.5rem;
+            }
+
+            .feature-card,
+            .mode-card {
+                padding: 1.2rem;
+            }
+
+            .feature-icon {
+                font-size: 2rem;
+            }
+
+            .mode-icon {
+                font-size: 1.6rem;
+            }
+
+            .feature-card h3,
+            .mode-card h3 {
+                font-size: 1rem;
+            }
+
+            .feature-card p,
+            .mode-card p {
+                font-size: 0.9rem;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 1rem;
+            }
+
+            .stat-number {
+                font-size: 1.8rem;
+            }
+
+            .stat-label {
+                font-size: 0.85rem;
+            }
+
+            .cta {
+                padding: 2rem 1rem;
+            }
+
+            .cta h2 {
+                font-size: 1.3rem;
+                margin-bottom: 0.8rem;
+            }
+
+            .cta p {
+                font-size: 0.9rem;
+                margin-bottom: 1.5rem;
+            }
+
+            .btn {
+                padding: 0.6rem 1.2rem;
+                font-size: 0.9rem;
+            }
+
+            footer {
+                padding: 1.5rem 1rem;
+                margin: 2rem auto 0;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .site-header {
+                flex-direction: column;
+                gap: 10px;
+                padding: 10px;
+            }
+
+            .header-nav {
+                width: 100%;
+                flex-direction: column;
+                gap: 8px;
+                justify-content: center;
+            }
+
+            .nav-link {
+                width: 100%;
+                justify-content: center;
+                padding: 8px 16px;
+                font-size: 0.8rem;
+            }
+
+            .hero {
+                padding: 1.5rem 0.8rem;
+            }
+
+            .hero-content h1 {
+                font-size: 1.4rem;
+            }
+
+            .hero-content .tagline {
+                font-size: 0.85rem;
+            }
+
+            .features,
+            .modes,
+            .stats,
+            .cta {
+                padding: 1rem;
+                margin: 1rem auto;
+            }
+
+            .features h2,
+            .modes h2 {
+                font-size: 1.2rem;
+                margin-bottom: 1rem;
+            }
+
+            .feature-card,
+            .mode-card {
+                padding: 1rem;
+            }
+
+            .feature-icon {
+                font-size: 1.8rem;
+                margin-bottom: 0.8rem;
+            }
+
+            .mode-icon {
+                font-size: 1.4rem;
+            }
+
+            .feature-card h3,
+            .mode-card h3 {
+                font-size: 0.95rem;
+                margin-bottom: 0.4rem;
+            }
+
+            .feature-card p,
+            .mode-card p {
+                font-size: 0.85rem;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+                gap: 0.8rem;
+            }
+
+            .stat {
+                padding: 0.8rem;
+            }
+
+            .stat-number {
+                font-size: 1.6rem;
+            }
+
+            .stat-label {
+                font-size: 0.8rem;
+            }
+
+            .cta {
+                padding: 1.5rem 1rem;
+            }
+
+            .cta h2 {
+                font-size: 1.1rem;
+                margin-bottom: 0.6rem;
+            }
+
+            .cta p {
+                font-size: 0.85rem;
+                margin-bottom: 1.2rem;
+            }
+
+            .btn {
+                padding: 0.5rem 1rem;
+                font-size: 0.85rem;
+            }
+
+            footer {
+                padding: 1.2rem 0.8rem;
+                margin: 1.5rem auto 0;
+                font-size: 0.85rem;
+            }
+
+            .social-links {
+                gap: 1rem;
+                font-size: 0.8rem;
+            }
         }
     </style>
 </head>
 <body>
-
-    <header class="site-header">
+    <header class="site-header scroll-animate fade-up">
         <div class="logo-container">
-            <img src="logo.png" alt="Formosa Tiers" style="height: 45px; filter: drop-shadow(0 0 10px rgba(59, 130, 246, 0.4));" onerror="this.style.display='none'">
+            <img src="images/logo.png" alt="Formosa Tiers" style="height: 45px; filter: drop-shadow(0 0 10px rgba(59, 130, 246, 0.4));" onerror="this.style.display='none'">
         </div>
         
-        <div class="header-controls">
-            <a href="https://discord.gg/yctefdXTvy" target="_blank" class="discord-btn">
+        <nav class="header-nav">
+            <a href="guide.html" class="nav-link">📖 PVP 指南</a>
+            <a href="tierlist.html" class="nav-link">🏆 排行榜</a>
+            <a href="https://discord.gg/yctefdXTvy" target="_blank" class="nav-link nav-link-discord">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037 13.924 13.924 0 0 0-.623 1.282 18.445 18.445 0 0 0-5.46 0 14.155 14.155 0 0 0-.623-1.282.072.072 0 0 0-.078-.037 19.742 19.742 0 0 0-4.886 1.515.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-2.313-9.117-6.046-13.687a.066.066 0 0 0-.03-.027ZM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.419 0 1.334-.956 2.419-2.157 2.419Zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.419 0 1.334-.946 2.419-2.157 2.419Z"/></svg>
-                <span>加入 Discord</span>
+                加入 Discord
             </a>
-
-            <div class="top-search">
-                <input type="text" id="searchInput" placeholder="搜尋頂尖玩家..." onkeyup="filterPlayers()">
-            </div>
-        </div>
+        </nav>
     </header>
 
-    <nav class="navbar" id="navbar">
-        <div class="nav-item active" onclick="switchTab(this, 'Sword')">🗡️ 鑽石王牌</div>
-        <div class="nav-item" onclick="switchTab(this, 'UHC')">❤️ UHC (封存)</div>
-        <div class="nav-item" onclick="switchTab(this, 'Pot')">🧪 鑽石POT</div>
-        <div class="nav-item" onclick="switchTab(this, 'NethOP')">👾 獄髓POT</div>
-        <div class="nav-item" onclick="switchTab(this, 'SMP')">🌍 SMP</div>
-        <div class="nav-item" onclick="switchTab(this, 'Mace')">🔨 重捶</div>
-        <div class="nav-item" onclick="switchTab(this, 'Axe')">🪓 盾斧</div>
-        <div class="nav-item" onclick="switchTab(this, 'Vanilla')">💎 水晶</div>
-    </nav>
-
-    <main class="tier-board" id="tierBoard"></main>
-
-    <!-- Player Modal -->
-    <div class="modal-overlay" id="playerModal" onclick="closeModal(event)">
-        <div class="modal-container" onclick="event.stopPropagation()">
-            <span class="modal-close" onclick="closeModal(event)">&times;</span>
-            
-            <div class="modal-skin-section">
-                <canvas id="skin_container"></canvas>
-                <div class="cape-selector" id="capeSelector"></div>
-                <div style="font-size: 0.65rem; color: #555; margin-top: 15px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px;">拖曳以移動視角 | 滾輪放大縮小 </div>
-            </div>
-
-            <div class="modal-info-section">
-                <div class="info-title" id="modalName">載入中...</div>
-                
-                <div style="color: var(--text-grey); font-size: 0.75rem; font-weight: 800; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 15px; display: flex; align-items: center; gap: 8px;">
-                    <span style="width: 12px; height: 2px; background: var(--accent-blue);"></span>
-                    📊 模式階級資訊
-                </div>
-                <div class="info-grid" id="modalTiers"></div>
-
-                <div style="color: var(--text-grey); font-size: 0.75rem; font-weight: 800; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 15px; margin-top: 20px; display: flex; align-items: center; gap: 8px;">
-                    <span style="width: 12px; height: 2px; background: var(--accent-blue);"></span>
-                    📝 最近測試紀錄
-                </div>
-                <div style="background: rgba(0,0,0,0.3); border-radius: 20px; padding: 5px; overflow-x: auto; border: 1px solid rgba(255,255,255,0.05);">
-                    <table class="test-table">
-                        <thead>
-                            <tr>
-                                <th>模式</th>
-                                <th>日期</th>
-                                <th>考官</th>
-                                <th>比分</th>
-                                <th>結果</th>
-                            </tr>
-                        </thead>
-                        <tbody id="modalTests"></tbody>
-                    </table>
-                </div>
+    <!-- 英雄區段 -->
+    <section class="hero">
+        <img src="images/background1.png" alt="Background" class="hero-bg active">
+        <img src="images/background2.png" alt="Background" class="hero-bg">
+        <div class="hero-content scroll-animate fade-up">
+            <h1>福爾摩沙 Tier List</h1>
+            <p class="tagline">台灣規模最大、最活躍的 Minecraft 1.21+ PVP 競技社群<br>為玩家提供公正、專業的實力評估與鑑定平台</p>
+            <div class="hero-buttons">
+                <a href="tierlist.html" class="btn btn-primary">查看排行榜</a>
+                <a href="#cta" class="btn btn-secondary">了解更多</a>
             </div>
         </div>
-    </div>
-    
-<script>
-    let skinViewer = null;
-    const googleSheetId = '1pRSRy8WOP5EJ7dng58QWZhuH90l4B0nFWqWI6rGoAyo';
-    const baseApiUrl = 'https://formosa-tier-list-database-api.vercel.app/api';
-    
-    const proxies = [
-        'https://corsproxy.io/?',
-        'https://api.allorigins.win/get?url='
-    ];
+    </section>
 
-    let database = {}; 
-    let currentMode = 'sword';
+    <!-- 特色區段 -->
+    <section id="features" class="features">
+        <h2 class="scroll-animate fade-up">為什麼選擇我們？</h2>
+        <div class="features-grid">
+            <div class="feature-card scroll-animate fade-up">
+                <div class="feature-icon">⚖️</div>
+                <h3>公正評估</h3>
+                <p>基於實力與表現的客觀鑑定系統，確保每位玩家得到公平的評估與認可。</p>
+            </div>
+            <div class="feature-card scroll-animate fade-up">
+                <div class="feature-icon">🏆</div>
+                <h3>專業平台</h3>
+                <p>匯聚台灣頂尖的高版本 PVP 玩家，提供專業級別的競技環境與交流機會。</p>
+            </div>
+            <div class="feature-card scroll-animate fade-up">
+                <div class="feature-icon">🤝</div>
+                <h3>社群交流</h3>
+                <p>與不同領域或志同道合的玩家交流，共同進步，打造最優質的 PVP 環境。</p>
+            </div>
+            <div class="feature-card scroll-animate fade-up">
+                <div class="feature-icon">📜</div>
+                <h3>專業指南</h3>
+                <p>詳細的遊戲模式指南與戰術分析，幫助你快速提升實力。</p>
+            </div>
+            <div class="feature-card scroll-animate fade-up">
+                <div class="feature-icon">🎯</div>
+                <h3>實力認證</h3>
+                <p>透過專業考試證明你的 PVP 實力，角逐台灣 PVP 巔峰。</p>
+            </div>
+            <div class="feature-card scroll-animate fade-up">
+                <div class="feature-icon">🔥</div>
+                <h3>最熱情社群</h3>
+                <p>最活躍的玩家社群，無論是新手還是高手都能找到屬於自己的位置。</p>
+            </div>
+        </div>
+    </section>
 
-    const modeMapping = {
-        'Sword': 'sword', 'UHC': 'uhc', 'Pot': 'DPot', 'NethOP': 'nethop',
-        'SMP': 'SMP', 'Mace': 'Mace', 'Axe': 'axe', 'Vanilla': 'Vanilla'
-    };
+    <!-- 遊戲模式區段 -->
+    <section id="modes" class="modes">
+        <h2 class="scroll-animate fade-up">遊戲模式</h2>
+        <div class="modes-grid">
+            <div class="mode-card scroll-animate scale">
+                <div class="mode-icon">⚔️</div>
+                <h3>鑽石王牌</h3>
+                <p>經典劍術對戰，考驗反應與技巧</p>
+            </div>
+            <div class="mode-card scroll-animate scale">
+                <div class="mode-icon">🧪</div>
+                <h3>鑽石POT</h3>
+                <p>藥水鑽裝戰鬥，策略與操作並重</p>
+            </div>
+            <div class="mode-card scroll-animate scale">
+                <div class="mode-icon">🔱</div>
+                <h3>獄髓POT</h3>
+                <p>以瓦礫為壁壘，高難度挑戰</p>
+            </div>
+            <div class="mode-card scroll-animate scale">
+                <div class="mode-icon">⚒️</div>
+                <h3>重錘(Mace)</h3>
+                <p>全新近戰武器，1.21+ 版本特色</p>
+            </div>
+            <div class="mode-card scroll-animate scale">
+                <div class="mode-icon">🛡️</div>
+                <h3>盾斧</h3>
+                <p>盾牌與斧頭的完美配合</p>
+            </div>
+            <div class="mode-card scroll-animate scale">
+                <div class="mode-icon">🌲</div>
+                <h3>SMP</h3>
+                <p>生存多人配置，SMP玩家必考</p>
+            </div>
+        </div>
+    </section>
 
-    const modeIcons = {
-        'sword': '🗡️', 'uhc': '❤️', 'DPot': '🧪', 'nethop': '👾',
-        'SMP': '🌍', 'Mace': '🔨', 'axe': '🪓', 'Vanilla': '💎'
-    };
+    <!-- 統計區段 -->
+    <section class="stats">
+        <div class="stats-grid">
+            <div class="stat">
+                <div class="stat-number">500+</div>
+                <div class="stat-label">活躍玩家</div>
+            </div>
+            <div class="stat">
+                <div class="stat-number">6</div>
+                <div class="stat-label">遊戲模式</div>
+            </div>
+            <div class="stat">
+                <div class="stat-number">24/7</div>
+                <div class="stat-label">社群活躍</div>
+            </div>
+        </div>
+    </section>
 
-    const tierConfigs = [
-        { name: "Tier 1", headerClass: "t1-header", icon: "🥇", color: "var(--tier1-color)" },
-        { name: "Tier 2", headerClass: "t2-header", icon: "🥈", color: "var(--tier2-color)" },
-        { name: "Tier 3", headerClass: "t3-header", icon: "🥉", color: "var(--tier3-color)" },
-        { name: "Tier 4", headerClass: "t4-header", icon: "", color: "var(--tier4-color)" },
-        { name: "Tier 5", headerClass: "t5-header", icon: "", color: "var(--tier5-color)" }
-    ];
+    <!-- 行動號召區段 -->
+    <section id="cta" class="cta scroll-animate fade-up">
+        <h2>準備好加入頂尖 PVP 社群了嗎？</h2>
+        <p>無論你是新手還是高手，福爾摩沙 Tier List 都是你展現實力、與志同道合玩家交流的最佳平台。<br>立即加入，成為台灣 PVP 巔峰的一部分！</p>
+        <a href="https://discord.com/invite/yctefdXTvy" class="btn btn-primary" style="background: white; color: #3b82f6;">加入 Discord 社群</a>
+    </section>
 
-    const levelMap = {
-        'H': { score: 3, label: 'H', color: '#f87171' },
-        'M': { score: 2, label: 'M', color: '#fbbf24' },
-        'L': { score: 1, label: 'L', color: '#4ade80' }
-    };
+    <!-- 頁尾 -->
+    <footer>
+        <div class="footer-content">
+            <p>&copy; 2025-2026 福爾摩沙 Tier List 社群。All rights reserved.</p>
+            <p>Formosa Tier List - Taiwan's Premier Minecraft 1.21+ PVP Community</p>
+        </div>
+        <div class="social-links">
+            <a href="https://discord.com/invite/yctefdXTvy">Discord</a>
+            <a href="#">官網</a>
+            <a href="tierlist.html">排行榜</a>
+        </div>
+    </footer>
+    <script>
+        // 背景輪播
+        const backgrounds = document.querySelectorAll('.hero-bg');
+        let currentBg = 0;
 
-    async function smartFetch(url) {
-        try {
-            const res = await fetch(url);
-            if (res.ok) return await res.json();
-        } catch (e) {}
-        try {
-            const res = await fetch(`${proxies[0]}${encodeURIComponent(url)}`);
-            if (res.ok) return await res.json();
-        } catch (e) {}
-        return null;
-    }
-
-    window.onload = () => fetchAllData();
-
-    async function fetchAllData() {
-        const board = document.getElementById('tierBoard');
-        board.innerHTML = `<div class="loading-data"><span class="loading-spinner"></span>正在連線至 Formosa 數據庫...</div>`;
-        try {
-            const rawData = await smartFetch(`${baseApiUrl}/tiers/overall`);
-            processApiData(rawData);
-            switchTab(document.querySelector('.nav-item.active'), 'Sword');
-        } catch (err) {
-            board.innerHTML = `<div class="loading-data">連線不穩定，請重新整理頁面。</div>`;
-        }
-    }
-
-    function processApiData(data) {
-        if (!Array.isArray(data)) return;
-        database = {};
-        data.forEach(item => {
-            const mode = item.mode;
-            const tierName = `Tier ${item.tier}`;
-            if (!database[mode]) database[mode] = {};
-            if (!database[mode][tierName]) database[mode][tierName] = [];
-            database[mode][tierName].push({
-                name: item.player,
-                level: (item.subtier || 'M').toUpperCase(),
-                uuid: item.uuid,
-                tier_rank: `${(item.subtier || 'M').toUpperCase()}T${item.tier}`
-            });
-        });
-        Object.keys(database).forEach(m => sortMode(m));
-    }
-
-    async function switchTab(el, displayName) {
-        if(!el) return;
-        document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
-        el.classList.add('active');
-        const mode = modeMapping[displayName];
-        currentMode = mode;
-        if (database[mode]) { renderBoard(mode); } else {
-            renderLoading(displayName);
-            await fetchSheetData(displayName);
-            renderBoard(mode);
-        }
-    }
-
-    async function fetchSheetData(sheetName) {
-        try {
-            const rows = await smartFetch(`https://opensheet.elk.sh/${googleSheetId}/${sheetName}`);
-            const mode = modeMapping[sheetName];
-            if (!database[mode]) database[mode] = {};
-            rows.forEach(row => {
-                if (!row.tier || !row.player) return;
-                const tName = `Tier ${row.tier}`;
-                if (!database[mode][tName]) database[mode][tName] = [];
-                database[mode][tName].push({ 
-                    name: row.player, 
-                    level: (row.level || 'M').toUpperCase(), 
-                    uuid: row.uuid || '',
-                    tier_rank: `${(row.level || 'M').toUpperCase()}T${row.tier}` // 儲存 rank 字串
-                });
-            });
-            sortMode(mode);
-        } catch (e) {}
-    }
-
-    function sortMode(m) {
-        Object.keys(database[m]).forEach(t => {
-            database[m][t].sort((a, b) => (levelMap[b.level]?.score || 0) - (levelMap[a.level]?.score || 0));
-        });
-    }
-
-    function renderLoading(name) { 
-        document.getElementById('tierBoard').innerHTML = `<div class="loading-data"><span class="loading-spinner"></span>正在載入 ${name} 列表...</div>`; 
-    }
-
-    function renderBoard(mode) {
-        const board = document.getElementById('tierBoard');
-        board.innerHTML = '';
-        const data = database[mode];
-        if (!data) return;
-        
-        tierConfigs.forEach(conf => {
-            const players = data[conf.name] || [];
-            const col = document.createElement('div');
-            col.className = 'tier-column';
-            col.innerHTML = `<div class="tier-header ${conf.headerClass}">${conf.icon} ${conf.name}</div>`;
-            const list = document.createElement('div');
-            list.className = 'player-list';
-            players.forEach(p => {
-                const l = levelMap[p.level] || levelMap['M'];
-                const card = document.createElement('div');
-                card.className = `player-card`;
-                card.onclick = () => showPlayerDetails(p);
-                card.innerHTML = `
-                    <div style="display:flex; align-items:center; gap:8px;">
-                        <span class="subtier-badge" style="background:${l.color}">${l.label}</span>
-                        ${p.uuid ? `<img src="https://mc-heads.net/avatar/${p.uuid}/18" width="18" height="18" style="border-radius:4px">` : ''}
-                        <span class="p-name">${p.name}</span>
-                    </div>
-                `;
-                list.appendChild(card);
-            });
-            col.appendChild(list);
-            board.appendChild(col);
-        });
-    }
-
-    async function showPlayerDetails(player) {
-        const modal = document.getElementById('playerModal');
-        const mName = document.getElementById('modalName');
-        const mTiers = document.getElementById('modalTiers');
-        const mTests = document.getElementById('modalTests');
-        const capeSelector = document.getElementById('capeSelector');
-        
-        mName.innerText = player.name;
-        mTiers.innerHTML = '<div style="color:#444">連線中...</div>';
-        mTests.innerHTML = '<tr><td colspan="5" style="text-align:center">載入中...</td></tr>';
-        capeSelector.innerHTML = '';
-        modal.style.display = 'flex';
-
-        if (!skinViewer) {
-            skinViewer = new skinview3d.SkinViewer({
-                canvas: document.getElementById('skin_container'),
-                width: 300, height: 400, alpha: true
-            });
-            skinViewer.animation = new skinview3d.IdleAnimation();
-            skinViewer.zoom = 0.85;
+        function cycleBackgrounds() {
+            backgrounds[currentBg].classList.remove('active');
+            currentBg = (currentBg + 1) % backgrounds.length;
+            backgrounds[currentBg].classList.add('active');
         }
 
-        // 載入 Skin
-        try {
-            const starlightUrl = `https://starlightskins.lunareclipse.studio/info/user/${player.name}`;
-            const data = await smartFetch(starlightUrl);
-            skinViewer.loadSkin(data.skinUrl, { model: data.skinType === 'slim' ? 'slim' : 'default' });
-            if (data.userCape) {
-                skinViewer.loadCape(data.userCape);
-                renderCapeToggle(data.userCape);
-            } else { skinViewer.loadCape(null); }
-        } catch (e) {
-            skinViewer.loadSkin(`https://api.mineatar.io/skin/${player.uuid || player.name}`);
-        }
+        setInterval(cycleBackgrounds, 5000); // 每5秒切換
 
-        // 載入 Tiers 與 Tests
-        try {
-            const [tiers, tests] = await Promise.all([
-                smartFetch(`${baseApiUrl}/player?name=${player.name}`),
-                smartFetch(`${baseApiUrl}/tests/examinee?name=${player.name}`)
-            ]);
-            
-            let finalTiersHtml = '';
+        // 滾動動畫 (Intersection Observer)
+        const scrollElements = document.querySelectorAll('.scroll-animate');
 
-            // --- 優先處理水晶 (Vanilla) 資訊卡 ---
-            if (currentMode === 'Vanilla') {
-                // 如果是水晶分頁，強制在最前方插入一張水晶卡片
-                // 資料來自於傳入 player 物件 (此物件已包含從 Sheet 抓到的 rank)
-                const tierNum = player.tier_rank.match(/\d/)?.[0] || '5';
-                const config = tierConfigs[parseInt(tierNum) - 1] || tierConfigs[4];
-                finalTiersHtml += `
-                    <div class="info-tier-card vanilla-special" style="border-top: 2px solid var(--vanilla-purple)">
-                        <span class="mode-label">💎 Vanilla <span>
-                        <div class="rank-container">
-                            <span class="rank-value" style="color: var(--vanilla-purple)">${player.tier_rank}</span>
-                            <span class="tier-tag" style="background: var(--vanilla-purple)">CORE DATA</span>
-                        </div>
-                    </div>
-                `;
-            }
-
-            // --- 渲染其餘資料庫資料 ---
-            if (tiers && tiers.length) {
-                finalTiersHtml += tiers.map(t => {
-                    // 如果這筆資料剛好又是 Vanilla，且我們已經手動插入過了，可選擇跳過或保留（這裡選擇保留以示對比）
-                    const tierNum = t.tier_rank.match(/\d/)?.[0] || '5';
-                    const config = tierConfigs[parseInt(tierNum) - 1] || tierConfigs[4];
-                    const icon = modeIcons[t.mode] || '⚔️';
-                    return `
-                        <div class="info-tier-card" style="border-top: 2px solid ${config.color}">
-                            <span class="mode-label">${icon} ${t.mode}</span>
-                            <div class="rank-container">
-                                <span class="rank-value" style="color: ${config.color}">${t.tier_rank}</span>
-                            </div>
-                        </div>
-                    `;
-                }).join('');
-            }
-
-            if (finalTiersHtml === '') {
-                mTiers.innerHTML = '<div style="color:var(--text-grey); font-size:0.8rem;">暫無階級紀錄</div>';
-            } else {
-                mTiers.innerHTML = finalTiersHtml;
-            }
-
-            // 測試紀錄渲染
-            mTests.innerHTML = (tests && tests.length) ? tests.map(t => `
-                <tr>
-                    <td style="font-weight:700">${t.mode.toUpperCase()}</td>
-                    <td style="color:var(--text-grey)">${t.test_date}</td>
-                    <td>${t.examiner}</td>
-                    <td><span class="score-box">${t.examinee_grade}:${t.examiner_grade}</span></td>
-                    <td><span class="outcome-badge">${t.outcome_tier}</span></td>
-                </tr>
-            `).join('') : '<tr><td colspan="5" style="text-align:center; color:var(--text-grey);">無紀錄</td></tr>';
-        } catch (err) { mTiers.innerHTML = '讀取失敗'; }
-    }
-
-    function renderCapeToggle(url) {
-        const container = document.getElementById('capeSelector');
-        const btn = document.createElement('button');
-        btn.className = 'nav-item active'; 
-        btn.style.padding = '8px 16px'; btn.style.fontSize = '12px';
-        btn.innerText = '切換披風';
-        btn.onclick = (e) => {
-            const active = e.target.classList.toggle('active');
-            skinViewer.loadCape(active ? url : null);
-        };
-        container.appendChild(btn);
-    }
-
-    function closeModal() { document.getElementById('playerModal').style.display = 'none'; }
-    
-    function filterPlayers() {
-        const val = document.getElementById('searchInput').value.toLowerCase();
-        document.querySelectorAll('.player-card').forEach(c => {
-            const name = c.querySelector('.p-name').textContent.toLowerCase();
-            c.style.display = name.includes(val) ? 'flex' : 'none';
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach((entry, index) => {
+                if (entry.isIntersecting) {
+                    setTimeout(() => {
+                        entry.target.classList.add('visible');
+                    }, index * 100);
+                }
+            });
+        }, {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
         });
-    }
-</script>
+
+        scrollElements.forEach(el => observer.observe(el));
+
+        // 視差滾動效果
+        const parallaxElements = document.querySelectorAll('.hero-bg');
+
+        window.addEventListener('scroll', () => {
+            const scrolled = window.pageYOffset;
+            parallaxElements.forEach((el, index) => {
+                const speed = 0.3 + (index * 0.1);
+                el.style.transform = `translateY(${scrolled * speed}px)`;
+            });
+        });
+    </script>
 </body>
 </html>
-
